@@ -34,7 +34,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void AddCorrectFilmReturnCode200() {
+    public void addCorrectFilmReturnCode200() {
 
         final Film newFilm = new Film();
         newFilm.setName("Фильм 1");
@@ -47,7 +47,7 @@ class FilmorateApplicationTests {
 
 
     @Test
-    public void AddFilmWithoutNameReturnCode500() {
+    public void addFilmWithoutNameReturnCode500() {
         final Film newFilm = new Film();
         newFilm.setName("");
         newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»)");
@@ -58,7 +58,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void AddFilmDescriptionMoreThan200ReturnCode500() {
+    public void addFilmDescriptionMoreThan200ReturnCode500() {
         final Film newFilm = new Film();
         newFilm.setName("Film name");
         newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " +
@@ -72,7 +72,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void AddFilmWithWrongReleaseDateReturnCode500() {
+    public void addFilmWithWrongReleaseDateReturnCode500() {
         final Film newFilm = new Film();
         newFilm.setName("Film name");
         newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»)");
@@ -83,7 +83,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void AddFilmWithNegativeDurationReturnCode500() {
+    public void addFilmWithNegativeDurationReturnCode500() {
         final Film newFilm = new Film();
         newFilm.setName("Film name");
         newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»)");
@@ -94,7 +94,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void AddCorrectUserReturnCode200() {
+    public void addCorrectUserReturnCode200() {
         final User newUser = new User();
         newUser.setName("Adam");
         newUser.setLogin("AdamOne");
@@ -105,7 +105,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void AddIncorrectLoginReturnCode500() {
+    public void addIncorrectLoginReturnCode500() {
         final User newUser = new User();
         newUser.setName("AdamLamberd");
         newUser.setLogin("Adam One");
@@ -116,7 +116,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void AddIncorrectMailReturnCode500() {
+    public void addIncorrectMailReturnCode500() {
         final User newUser = new User();
         newUser.setName("AdamLamberd");
         newUser.setLogin("AdamOne");
@@ -127,7 +127,7 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void AddIncorrectBirthdayReturnCode500() {
+    public void addIncorrectBirthdayReturnCode500() {
         final User newUser = new User();
         newUser.setName("AdamLamberd");
         newUser.setLogin("AdamOne");
