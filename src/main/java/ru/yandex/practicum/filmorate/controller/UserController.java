@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -29,7 +30,7 @@ public class UserController {
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             throw new ValidationException("логин не может быть пустым и содержать пробелы");
         }
-        if (user.getBirthday().after(new Date())) {
+        if (user.getBirthday().isAfter(LocalDateTime.now().toLocalDate())) {
             throw new ValidationException("дата рождения не может быть в будущем");
         }
     }
@@ -38,6 +39,9 @@ public class UserController {
     public User create(@RequestBody User user) {
         // проверяем выполнение необходимых условий
         validateUsersData(user);
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
         // формируем дополнительные данные
         user.setId(getNextId());
         // сохраняем новую публикацию в памяти приложения
@@ -70,6 +74,9 @@ public class UserController {
             }
             if (newUser.getName() != null) {
                 oldUser.setName(newUser.getName());
+            }
+            if (newUser.getName() == null || newUser.getName().isBlank()) {
+                oldUser.setName(newUser.getLogin());
             }
             if (newUser.getLogin() != null) {
                 oldUser.setLogin(newUser.getLogin());
