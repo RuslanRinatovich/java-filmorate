@@ -14,6 +14,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
+
+    private long currentMaxId = 0;
     private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
 
     private final Map<Long, Film> films = new HashMap<>();
@@ -29,7 +31,7 @@ public class FilmController {
             logger.error("название не может быть пустым");
             throw new ValidationException("название не может быть пустым");
         }
-        if (film.getDescription().length() > 200) {
+        if (film.getDescription() != null && film.getDescription().length() > 200) {
             logger.error("максимальная длина описания — 200 символов");
             throw new ValidationException("максимальная длина описания — 200 символов");
         }
@@ -45,8 +47,8 @@ public class FilmController {
 
     @PostMapping
     public Film create(@RequestBody Film film) {
-           validateFilmsData(film);
-           // формируем дополнительные данные
+        validateFilmsData(film);
+        // формируем дополнительные данные
         film.setId(getNextId());
         // сохраняем новую публикацию в памяти приложения
         films.put(film.getId(), film);
@@ -60,28 +62,22 @@ public class FilmController {
         if (newFilm.getId() == null) {
             throw new ValidationException("Id должен быть указан");
         }
-        if (films.containsKey(newFilm.getId())) {
-            Film oldFilm = films.get(newFilm.getId());
-            validateFilmsData(newFilm);
-            oldFilm.setName(newFilm.getName());
-            oldFilm.setDuration(newFilm.getDuration());
-            oldFilm.setReleaseDate(newFilm.getReleaseDate());
-            oldFilm.setDescription(newFilm.getDescription());
-            logger.info("Информация обновлена");
-            return oldFilm;
-
+        if (!films.containsKey(newFilm.getId())) {
+            logger.warn("Фильм с id = " + newFilm.getId() + " не найден");
+            throw new ValidationException("Фильм с id = " + newFilm.getId() + " не найден");
         }
-        logger.warn("Фильм с id = " + newFilm.getId() + " не найден");
-        throw new ValidationException("Фильм с id = " + newFilm.getId() + " не найден");
+        Film oldFilm = films.get(newFilm.getId());
+        validateFilmsData(newFilm);
+        oldFilm.setName(newFilm.getName());
+        oldFilm.setDuration(newFilm.getDuration());
+        oldFilm.setReleaseDate(newFilm.getReleaseDate());
+        oldFilm.setDescription(newFilm.getDescription());
+        logger.info("Информация обновлена");
+        return oldFilm;
     }
 
     // вспомогательный метод для генерации идентификатора нового поста
     private long getNextId() {
-        long currentMaxId = films.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
         return ++currentMaxId;
     }
 }

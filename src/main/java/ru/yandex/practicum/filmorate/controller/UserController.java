@@ -13,6 +13,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    private long currentMaxId = 0;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final Map<Long, User> users = new HashMap<>();
 
@@ -99,7 +100,6 @@ public class UserController {
 
     // вспомогательный метод для генерации идентификатора нового пользователя
     private long getNextId() {
-        long currentMaxId = users.keySet().stream().mapToLong(id -> id).max().orElse(0);
         return ++currentMaxId;
     }
 }

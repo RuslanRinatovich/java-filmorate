@@ -72,6 +72,16 @@ class FilmorateApplicationTests {
     }
 
     @Test
+    public void addFilmWithNullDescriptionReturnCode200() {
+        final Film newFilm = new Film();
+        newFilm.setName("Film name");
+        newFilm.setDuration(34);
+        newFilm.setReleaseDate(LocalDate.of(2004, 4, 16));
+        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
     public void addFilmWithWrongReleaseDateReturnCode500() {
         final Film newFilm = new Film();
         newFilm.setName("Film name");
