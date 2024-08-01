@@ -44,7 +44,7 @@ public class FilmController {
 
     // добавить лайк
     @PutMapping("/{id}/like/{userId}")
-    public Like like(@PathVariable(required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
+    public Like like(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
         // добавьте необходимые проверки
         if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
@@ -53,8 +53,8 @@ public class FilmController {
 
     // удалить лайк
     @DeleteMapping("/{id}/like/{userId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void delete(@PathVariable(required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
         // добавьте необходимые проверки
         if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
@@ -62,9 +62,9 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public Collection<Film> findAll(@RequestParam(name = "count", defaultValue = "10", required = false) Integer count) {
-        String sort = "asc"; //desc
+        String sort = "desc"; //asc
         return filmService.findMostPopular(count, 0, sort);
     }
 

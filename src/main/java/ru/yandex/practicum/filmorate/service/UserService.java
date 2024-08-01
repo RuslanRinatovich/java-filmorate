@@ -48,17 +48,20 @@ public class UserService {
 
 
     public void deleteFriend(Long userId, Long friendId) {
+        if (!inMemoryUserStorage.getUsers().containsKey(userId)) {
+            logger.error("пользователя с id = " + userId + " нет");
+            throw new ValidationException("пользователя с id = " + userId + " нет");
+        }
+        if (!inMemoryUserStorage.getUsers().containsKey(friendId)) {
+            logger.error("пользователя с id = " + friendId + " нет");
+            throw new ValidationException("пользователя с id = " + friendId + " нет");
+        }
         // проверяем необходимые условия
         Optional<Friend> friend = friends.values().stream().filter(f -> (Objects.equals(f.getFirtsUserId(), userId) && Objects.equals(f.getSecondUserId(), friendId) ||
                 Objects.equals(f.getFirtsUserId(), friendId) && Objects.equals(f.getSecondUserId(), userId))).findFirst();
-        if (friend.isEmpty()) {
-            logger.error("запись не найдена");
-            throw new ValidationException("запись не найдена");
-        }
 
+        friend.ifPresent(value -> friends.remove(value.getId()));
 
-
-        friends.remove(friend.get().getId());
     }
 
     public Collection<User> getFriends(Long userId) {
@@ -83,12 +86,11 @@ public class UserService {
         Set<User> firstUserFriends = new HashSet<>(getFriends(userId));
         Set<User> secondUserFriends = new HashSet<>(getFriends(otherUserId));
         Set<User> commonFriends = new HashSet<>();
-        if (!firstUserFriends.isEmpty())
-            commonFriends.addAll(firstUserFriends);
-
-        if (!secondUserFriends.isEmpty())
-            commonFriends.addAll(secondUserFriends.stream().toList());
-        return commonFriends;
+        if (firstUserFriends.isEmpty() || secondUserFriends.isEmpty() )
+            return commonFriends;
+        commonFriends.addAll(firstUserFriends);
+        commonFriends.retainAll(secondUserFriends);
+         return commonFriends;
     }
 
     // вспомогательный метод для генерации идентификатора нового поста
