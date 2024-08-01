@@ -25,34 +25,10 @@ public class FilmController {
         return films.values();
     }
 
-    //метод для проверки пользователя
-    void validateFilmsData(Film film) throws ValidationException {
-        if (film.getName() == null || film.getName().isBlank()) {
-            logger.error("название не может быть пустым");
-            throw new ValidationException("название не может быть пустым");
-        }
-        if (film.getDescription() != null && film.getDescription().length() > 200) {
-            logger.error("максимальная длина описания — 200 символов");
-            throw new ValidationException("максимальная длина описания — 200 символов");
-        }
-        if (film.getDuration() <= 0) {
-            logger.error("продолжительность фильма должна быть положительным числом");
-            throw new ValidationException("продолжительность фильма должна быть положительным числом");
-        }
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, Calendar.DECEMBER, 28))) {
-            logger.error("дата релиза — не раньше 28 декабря 1895 года");
-            throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
-        }
-    }
 
     @PostMapping
     public Film create(@RequestBody Film film) {
-        validateFilmsData(film);
-        // формируем дополнительные данные
-        film.setId(getNextId());
-        // сохраняем новую публикацию в памяти приложения
-        films.put(film.getId(), film);
-        logger.info("Добавлен новый фильм");
+
         return film;
     }
 
@@ -76,8 +52,5 @@ public class FilmController {
         return oldFilm;
     }
 
-    // вспомогательный метод для генерации идентификатора нового поста
-    private long getNextId() {
-        return ++currentMaxId;
-    }
+
 }
