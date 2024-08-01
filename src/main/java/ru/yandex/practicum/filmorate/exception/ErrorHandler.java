@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice("ru.yandex.practicum.filmorate")
 public class ErrorHandler {
-   // 500
+    // 500
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleInternalServerError(final InternalServerErrorException e) {
@@ -27,14 +27,26 @@ public class ErrorHandler {
         );
     }
 
-    //404
+
+    //400
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFound(final ValidationException e) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidation(final ValidationException e) {
         return new ErrorResponse(
-                "Искомый объект не найден",
+                "Ошибка валидации",
                 e.getMessage()
         );
     }
+
+    // 404
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFounf(final NotFoundException e) {
+        return new ErrorResponse(
+                "Ошибка с входным параметром.",
+                e.getMessage()
+        );
+    }
+
 
 }

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -35,11 +35,11 @@ public class FilmService {
         }
         if (!inMemoryUserStorage.getUsers().containsKey(like.getUserId())) {
             logger.error("пользователя с id = " + like.getUserId() + " нет");
-            throw new ValidationException("пользователя с id = " + like.getUserId() + " нет");
+            throw new NotFoundException("пользователя с id = " + like.getUserId() + " нет");
         }
         if (!inMemoryFilmStorage.getFilms().containsKey(like.getFilmId())) {
             logger.error("Фильма с id = " + like.getFilmId() + " нет");
-            throw new ValidationException("Фильма с id = " + like.getFilmId() + " нет");
+            throw new NotFoundException("Фильма с id = " + like.getFilmId() + " нет");
         }
         like.setId(getNextId());
         // сохраняем новую публикацию в памяти приложения
@@ -58,7 +58,7 @@ public class FilmService {
                 (Objects.equals(f.getFilmId(), like.getFilmId()))).findFirst();
         if (like1.isEmpty()) {
             logger.error("лайка нет");
-            throw new ValidationException("лайка нет");
+            throw new NotFoundException("лайка нет");
         }
         Film film = inMemoryFilmStorage.getById(like.getFilmId());
         film.setLikesCount(film.getLikesCount() - 1);

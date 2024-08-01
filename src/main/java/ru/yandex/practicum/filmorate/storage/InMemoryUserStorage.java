@@ -5,7 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -24,19 +26,19 @@ public class InMemoryUserStorage implements UserStorage {
     void validateUsersData(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             logger.error("электронная почта не может быть пустой");
-            throw new InternalServerErrorException("электронная почта не может быть пустой");
+            throw new ValidationException("электронная почта не может быть пустой");
         }
         if (!user.getEmail().contains("@")) {
             logger.error("электронная почта не корректна");
-            throw new InternalServerErrorException("электронная почта не корректна");
+            throw new ValidationException("электронная почта не корректна");
         }
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             logger.error("логин не может быть пустым и содержать пробелы");
-            throw new InternalServerErrorException("логин не может быть пустым и содержать пробелы");
+            throw new ValidationException("логин не может быть пустым и содержать пробелы");
         }
         if (user.getBirthday().isAfter(LocalDateTime.now().toLocalDate())) {
             logger.error("дата рождения не может быть в будущем");
-            throw new InternalServerErrorException("дата рождения не может быть в будущем");
+            throw new ValidationException("дата рождения не может быть в будущем");
         }
     }
 
@@ -61,7 +63,7 @@ public class InMemoryUserStorage implements UserStorage {
         // не указан его идентификатор
         if (newUser.getId() == null) {
             logger.error("Id должен быть указан");
-            throw new ValidationException("Id должен быть указан");
+            throw new IncorrectParameterException("Id должен быть указан");
         }
 
         if (users.containsKey(newUser.getId())) {
@@ -71,7 +73,7 @@ public class InMemoryUserStorage implements UserStorage {
                 Optional<User> currentUser = users.values().stream().filter(u -> u.getEmail().equals(newUser.getEmail())).findFirst();
                 if (currentUser.isPresent()) {
                     logger.error("Этот имейл уже используется");
-                    throw new ValidationException("Этот имейл уже используется");
+                    throw new InternalServerErrorException("Этот имейл уже используется");
                 }
                 oldUser.setEmail(newUser.getEmail());
             }
@@ -93,18 +95,18 @@ public class InMemoryUserStorage implements UserStorage {
             return oldUser;
         }
         logger.warn("Пользователь с id = " + newUser.getId() + " не найден");
-        throw new ValidationException("Пользователь с id = " + newUser.getId() + " не найден");
+        throw new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден");
     }
 
     @Override
     public void delete(Long userId) {
         // проверяем необходимые условия
         if (userId == null) {
-            throw new ValidationException("Id должен быть указан");
+            throw new IncorrectParameterException("Id должен быть указан");
         }
         if (!users.containsKey(userId)) {
             logger.warn("Пользователь с id = " + userId + " не найден");
-            throw new ValidationException("Пользователь с id = " + userId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
 
         users.remove(userId);
@@ -113,11 +115,11 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User getById(Long userId) {
         if (userId == null) {
-            throw new ValidationException("Id должен быть указан");
+            throw new IncorrectParameterException("Id должен быть указан");
         }
         if (!users.containsKey(userId)) {
             logger.warn("Пользователь с id = " + userId + " не найден");
-            throw new ValidationException("Пользователь с id = " + userId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
         return users.get(userId);
     }

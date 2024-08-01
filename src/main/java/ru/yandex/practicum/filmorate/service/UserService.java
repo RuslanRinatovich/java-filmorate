@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Friend;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -32,11 +32,11 @@ public class UserService {
         }
         if (!inMemoryUserStorage.getUsers().containsKey(friend.getFirtsUserId())) {
             logger.error("пользователя с id = " + friend.getFirtsUserId() + " нет");
-            throw new ValidationException("пользователя с id = " + friend.getFirtsUserId() + " нет");
+            throw new NotFoundException("пользователя с id = " + friend.getFirtsUserId() + " нет");
         }
         if (!inMemoryUserStorage.getUsers().containsKey(friend.getSecondUserId())) {
             logger.error("пользователя с id = " + friend.getSecondUserId() + " нет");
-            throw new ValidationException("пользователя с id = " + friend.getSecondUserId() + " нет");
+            throw new NotFoundException("пользователя с id = " + friend.getSecondUserId() + " нет");
         }
 
         friend.setId(getNextId());
@@ -49,11 +49,11 @@ public class UserService {
     public void deleteFriend(Long userId, Long friendId) {
         if (!inMemoryUserStorage.getUsers().containsKey(userId)) {
             logger.error("пользователя с id = " + userId + " нет");
-            throw new ValidationException("пользователя с id = " + userId + " нет");
+            throw new NotFoundException("пользователя с id = " + userId + " нет");
         }
         if (!inMemoryUserStorage.getUsers().containsKey(friendId)) {
             logger.error("пользователя с id = " + friendId + " нет");
-            throw new ValidationException("пользователя с id = " + friendId + " нет");
+            throw new NotFoundException("пользователя с id = " + friendId + " нет");
         }
         // проверяем необходимые условия
         Optional<Friend> friend = friends.values().stream().filter(f -> (Objects.equals(f.getFirtsUserId(), userId) && Objects.equals(f.getSecondUserId(), friendId) ||
@@ -66,7 +66,7 @@ public class UserService {
     public Collection<User> getFriends(Long userId) {
         if (!inMemoryUserStorage.getUsers().containsKey(userId)) {
             logger.error("пользователя с id = " + userId + " нет");
-            throw new ValidationException("пользователя с id = " + userId + " нет");
+            throw new NotFoundException("пользователя с id = " + userId + " нет");
         }
         List<Friend> friends1 = friends.values().stream().filter(f -> Objects.equals(f.getFirtsUserId(), userId)).toList();
         List<Friend> friends2 = friends.values().stream().filter(f -> Objects.equals(f.getSecondUserId(), userId)).toList();
