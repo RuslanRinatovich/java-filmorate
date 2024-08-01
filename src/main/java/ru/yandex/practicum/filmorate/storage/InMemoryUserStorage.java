@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -23,19 +24,19 @@ public class InMemoryUserStorage implements UserStorage {
     void validateUsersData(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             logger.error("электронная почта не может быть пустой");
-            throw new InternalServerErrorException("электронная почта не может быть пустой");
+            throw new IncorrectParameterException("электронная почта не может быть пустой");
         }
         if (!user.getEmail().contains("@")) {
             logger.error("электронная почта не корректна");
-            throw new InternalServerErrorException("электронная почта не корректна");
+            throw new IncorrectParameterException("электронная почта не корректна");
         }
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             logger.error("логин не может быть пустым и содержать пробелы");
-            throw new InternalServerErrorException("логин не может быть пустым и содержать пробелы");
+            throw new IncorrectParameterException("логин не может быть пустым и содержать пробелы");
         }
         if (user.getBirthday().isAfter(LocalDateTime.now().toLocalDate())) {
             logger.error("дата рождения не может быть в будущем");
-            throw new InternalServerErrorException("дата рождения не может быть в будущем");
+            throw new IncorrectParameterException("дата рождения не может быть в будущем");
         }
     }
 
