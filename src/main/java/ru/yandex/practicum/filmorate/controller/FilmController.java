@@ -3,15 +3,13 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.service.UserService;
+
 
 import java.util.*;
 
@@ -39,38 +37,34 @@ public class FilmController {
     }
 
     @PutMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public Film update(@RequestBody Film newFilm) {
         return filmService.getInMemoryFilmStorage().update(newFilm);
     }
 
     // добавить лайк
     @PutMapping("/{id}/like/{userId}")
-    public Like like(@RequestParam(required = false) final Long filmId, @RequestParam(required = false) final Long userId) {
+    public Like like(@PathVariable(required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
         // добавьте необходимые проверки
-        if (filmId == null)
-            throw new IncorrectParameterException("Необходимо установить параметр filmId");
-        if (userId == null)
-            throw new IncorrectParameterException("Необходимо установить параметр userId");
+        if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
+        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         return filmService.add(new Like(filmId, userId));
     }
 
     // удалить лайк
-    @PutMapping("/{id}/like/{userId}")
+    @DeleteMapping("/{id}/like/{userId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void delete(@RequestParam(required = false) final Long filmId, @RequestParam(required = false) final Long userId) {
+    public void delete(@PathVariable(required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
         // добавьте необходимые проверки
-        if (filmId == null)
-            throw new IncorrectParameterException("Необходимо установить параметр filmId");
-        if (userId == null)
-            throw new IncorrectParameterException("Необходимо установить параметр userId");
+        if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
+        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         filmService.delete(new Like(filmId, userId));
     }
+
     @GetMapping("/popular")
     @ResponseStatus(HttpStatus.FOUND)
-    public Collection<Film> findAll(
-            @RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
-        String sort= "asc"; //desc
+    public Collection<Film> findAll(@RequestParam(name = "count", defaultValue = "10", required = false) Integer count) {
+        String sort = "asc"; //desc
         return filmService.findMostPopular(count, 0, sort);
     }
 

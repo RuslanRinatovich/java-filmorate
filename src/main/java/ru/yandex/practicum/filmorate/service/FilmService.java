@@ -8,11 +8,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Friend;
 import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
@@ -21,36 +18,34 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FilmService {
+    private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
     @Getter
     private final UserStorage inMemoryUserStorage;
     @Getter
     private final FilmStorage inMemoryFilmStorage;
-    private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
     private final Map<Long, Like> likes = new HashMap<>();
     private long currentMaxId = 0;
-    public Like add(Like like)
-    {
+
+    public Like add(Like like) {
         Optional<Like> like1 = likes.values().stream().filter(f -> (Objects.equals(f.getUserId(), like.getUserId())) &&
                 (Objects.equals(f.getFilmId(), like.getFilmId()))).findFirst();
-        if (like1.isPresent())
-        {
+        if (like1.isPresent()) {
             logger.error("такая запись уже есть");
             throw new InternalServerErrorException("такая запись уже есть");
         }
-        if (!inMemoryUserStorage.getUsers().containsKey(like.getUserId()))
-        {
+        if (!inMemoryUserStorage.getUsers().containsKey(like.getUserId())) {
             logger.error("пользователя с id = " + like.getUserId() + " нет");
             throw new ValidationException("пользователя с id = " + like.getUserId() + " нет");
         }
-        if (!inMemoryFilmStorage.getFilms().containsKey(like.getFilmId()))
-        {
+        if (!inMemoryFilmStorage.getFilms().containsKey(like.getFilmId())) {
             logger.error("Фильма с id = " + like.getFilmId() + " нет");
             throw new ValidationException("Фильма с id = " + like.getFilmId() + " нет");
         }
         like.setId(getNextId());
         // сохраняем новую публикацию в памяти приложения
         likes.put(like.getId(), like);
-
+        Film film = inMemoryFilmStorage.getById(like.getFilmId());
+        film.setLikesCount(film.getLikesCount() + 1);
         return like;
     }
 
@@ -58,22 +53,22 @@ public class FilmService {
         return ++currentMaxId;
     }
 
-    public void delete(Like like)
-    {
+    public void delete(Like like) {
         Optional<Like> like1 = likes.values().stream().filter(f -> (Objects.equals(f.getUserId(), like.getUserId())) &&
                 (Objects.equals(f.getFilmId(), like.getFilmId()))).findFirst();
-        if (like1.isEmpty())
-        {
+        if (like1.isEmpty()) {
             logger.error("лайка нет");
             throw new ValidationException("лайка нет");
         }
+        Film film = inMemoryFilmStorage.getById(like.getFilmId());
+        film.setLikesCount(film.getLikesCount() - 1);
         likes.remove(like1.get().getId());
     }
 
     public Collection<Film> findMostPopular(Integer size, Integer from, String sort) {
         return inMemoryFilmStorage.getFilms().values().stream().sorted((p0, p1) -> {
             int comp = p0.getLikesCount().compareTo(p1.getLikesCount()); //прямой порядок сортировки
-            if(sort.equals("desc")){
+            if (sort.equals("desc")) {
                 comp = -1 * comp; //обратный порядок сортировки
             }
             return comp;

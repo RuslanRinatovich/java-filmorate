@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -25,19 +26,19 @@ public class InMemoryFilmStorage implements FilmStorage {
     void validateFilmsData(Film film) throws ValidationException {
         if (film.getName() == null || film.getName().isBlank()) {
             logger.error("название не может быть пустым");
-            throw new ValidationException("название не может быть пустым");
+            throw new IncorrectParameterException("название не может быть пустым");
         }
         if (film.getDescription() != null && film.getDescription().length() > 200) {
             logger.error("максимальная длина описания — 200 символов");
-            throw new ValidationException("максимальная длина описания — 200 символов");
+            throw new IncorrectParameterException("максимальная длина описания — 200 символов");
         }
         if (film.getDuration() <= 0) {
             logger.error("продолжительность фильма должна быть положительным числом");
-            throw new ValidationException("продолжительность фильма должна быть положительным числом");
+            throw new IncorrectParameterException("продолжительность фильма должна быть положительным числом");
         }
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, Calendar.DECEMBER, 28))) {
             logger.error("дата релиза — не раньше 28 декабря 1895 года");
-            throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
+            throw new IncorrectParameterException("дата релиза — не раньше 28 декабря 1895 года");
         }
     }
 
@@ -46,6 +47,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         validateFilmsData(film);
         // формируем дополнительные данные
         film.setId(getNextId());
+        film.setLikesCount(0L);
         // сохраняем новую публикацию в памяти приложения
         films.put(film.getId(), film);
         return film;
@@ -55,7 +57,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film update(Film newFilm) {
         // проверяем необходимые условия
         if (newFilm.getId() == null) {
-            throw new ValidationException("Id должен быть указан");
+            throw new IncorrectParameterException("Id должен быть указан");
         }
         if (!films.containsKey(newFilm.getId())) {
             logger.warn("Фильм с id = " + newFilm.getId() + " не найден");
@@ -76,7 +78,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void delete(Long filmId) {
         // проверяем необходимые условия
         if (filmId == null) {
-            throw new ValidationException("Id должен быть указан");
+            throw new IncorrectParameterException("Id должен быть указан");
         }
         if (!films.containsKey(filmId)) {
             logger.warn("Фильм с id = " + filmId + " не найден");
@@ -89,7 +91,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film getById(Long filmId) {
         if (filmId == null) {
-            throw new ValidationException("Id должен быть указан");
+            throw new IncorrectParameterException("Id должен быть указан");
         }
         if (!films.containsKey(filmId)) {
             logger.warn("Фильм с id = " + filmId + " не найден");

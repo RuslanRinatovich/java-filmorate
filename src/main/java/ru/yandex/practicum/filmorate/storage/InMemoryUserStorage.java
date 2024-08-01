@@ -3,14 +3,15 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.yandex.practicum.filmorate.controller.UserController;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Component
 public class InMemoryUserStorage implements UserStorage {
 
     private static final Logger logger = LoggerFactory.getLogger(InMemoryUserStorage.class);
@@ -22,24 +23,26 @@ public class InMemoryUserStorage implements UserStorage {
     void validateUsersData(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             logger.error("электронная почта не может быть пустой");
-            throw new ValidationException("электронная почта не может быть пустой");
+            throw new IncorrectParameterException("электронная почта не может быть пустой");
         }
         if (!user.getEmail().contains("@")) {
             logger.error("электронная почта не корректна");
-            throw new ValidationException("электронная почта не корректна");
+            throw new IncorrectParameterException("электронная почта не корректна");
         }
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
             logger.error("логин не может быть пустым и содержать пробелы");
-            throw new ValidationException("логин не может быть пустым и содержать пробелы");
+            throw new IncorrectParameterException("логин не может быть пустым и содержать пробелы");
         }
         if (user.getBirthday().isAfter(LocalDateTime.now().toLocalDate())) {
             logger.error("дата рождения не может быть в будущем");
-            throw new ValidationException("дата рождения не может быть в будущем");
+            throw new IncorrectParameterException("дата рождения не может быть в будущем");
         }
     }
 
     @Override
     public User add(User user) {
+        validateUsersData(user);
+
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
