@@ -1,10 +1,10 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
-import ru.yandex.practicum.filmorate.controller.FilmController;
+
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -16,7 +16,8 @@ import java.util.Map;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private static final Logger logger = LoggerFactory.getLogger(FilmController.class);
+    private static final Logger logger = LoggerFactory.getLogger(InMemoryFilmStorage.class);
+    @Getter
     private final Map<Long, Film> films = new HashMap<>();
     private long currentMaxId = 0;
 
@@ -66,6 +67,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         oldFilm.setDuration(newFilm.getDuration());
         oldFilm.setReleaseDate(newFilm.getReleaseDate());
         oldFilm.setDescription(newFilm.getDescription());
+        oldFilm.setLikesCount(newFilm.getLikesCount());
         logger.info("Информация обновлена");
         return oldFilm;
     }
@@ -82,6 +84,18 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
 
         films.remove(filmId);
+    }
+
+    @Override
+    public Film getById(Long filmId) {
+        if (filmId == null) {
+            throw new ValidationException("Id должен быть указан");
+        }
+        if (!films.containsKey(filmId)) {
+            logger.warn("Фильм с id = " + filmId + " не найден");
+            throw new ValidationException("Фильм с id = " + filmId + " не найден");
+        }
+        return films.get(filmId);
     }
 
     // вспомогательный метод для генерации идентификатора нового поста
