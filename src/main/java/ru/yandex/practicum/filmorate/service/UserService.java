@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Friend;
@@ -86,7 +85,7 @@ public class UserService {
         Set<User> firstUserFriends = new HashSet<>(getFriends(userId));
         Set<User> secondUserFriends = new HashSet<>(getFriends(otherUserId));
         Set<User> commonFriends = new HashSet<>();
-        if (firstUserFriends.isEmpty() || secondUserFriends.isEmpty() )
+        if (firstUserFriends.isEmpty() || secondUserFriends.isEmpty())
             return commonFriends;
         commonFriends.addAll(firstUserFriends);
         commonFriends.retainAll(secondUserFriends);
