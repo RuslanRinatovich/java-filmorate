@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice("ru.yandex.practicum.filmorate")
 public class ErrorHandler {
-    // 400
+    // 500
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleInternalServerError(final InternalServerErrorException e) {
         return new ErrorResponse(
                 "Возникло исключение",
@@ -17,9 +17,9 @@ public class ErrorHandler {
         );
     }
 
-    // 500
+    // 400
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleIncorrectParameter(final IncorrectParameterException e) {
         return new ErrorResponse(
                 "Ошибка с входным параметром.",
