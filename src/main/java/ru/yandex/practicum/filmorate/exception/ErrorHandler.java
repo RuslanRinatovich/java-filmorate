@@ -41,7 +41,7 @@ public class ErrorHandler {
     // 404
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFounf(final NotFoundException e) {
+    public ErrorResponse handleNotFound(final NotFoundException e) {
         return new ErrorResponse(
                 "Ошибка с входным параметром.",
                 e.getMessage()
