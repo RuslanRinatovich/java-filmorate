@@ -7,4 +7,10 @@ public class Friend {
     private Long id;
     private Long firtsUserId;
     private Long secondUserId;
+
+    public Friend(Long firtsUserId, Long secondUserId)
+    {
+        this.firtsUserId = firtsUserId;
+        this.secondUserId = secondUserId;
+    }
 }

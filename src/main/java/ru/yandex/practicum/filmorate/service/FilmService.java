@@ -30,7 +30,6 @@ public class FilmService {
     private long currentMaxId = 0;
     public Like add(Like like)
     {
-
         Optional<Like> like1 = likes.values().stream().filter(f -> (Objects.equals(f.getUserId(), like.getUserId())) &&
                 (Objects.equals(f.getFilmId(), like.getFilmId()))).findFirst();
         if (like1.isPresent())
