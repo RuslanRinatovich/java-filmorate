@@ -6,11 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
-import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -28,19 +27,19 @@ public class InMemoryFilmStorage implements FilmStorage {
     void validateFilmsData(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             logger.error("название не может быть пустым");
-            throw new InternalServerErrorException("название не может быть пустым");
+            throw new ValidationException("название не может быть пустым");
         }
         if (film.getDescription() != null && film.getDescription().length() > 200) {
             logger.error("максимальная длина описания — 200 символов");
-            throw new InternalServerErrorException("максимальная длина описания — 200 символов");
+            throw new ValidationException("максимальная длина описания — 200 символов");
         }
         if (film.getDuration() <= 0) {
             logger.error("продолжительность фильма должна быть положительным числом");
-            throw new InternalServerErrorException("продолжительность фильма должна быть положительным числом");
+            throw new ValidationException("продолжительность фильма должна быть положительным числом");
         }
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, Calendar.DECEMBER, 28))) {
             logger.error("дата релиза — не раньше 28 декабря 1895 года");
-            throw new InternalServerErrorException("дата релиза — не раньше 28 декабря 1895 года");
+            throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
         }
     }
 

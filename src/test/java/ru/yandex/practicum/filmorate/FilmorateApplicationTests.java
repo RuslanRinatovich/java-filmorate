@@ -47,18 +47,18 @@ class FilmorateApplicationTests {
 
 
     @Test
-    public void addFilmWithoutNameReturnCode500() {
+    public void addFilmWithoutNameReturnCode400() {
         final Film newFilm = new Film();
         newFilm.setName("");
         newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»)");
         newFilm.setDuration(34);
         newFilm.setReleaseDate(LocalDate.of(2004, 4, 16));
         final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void addFilmDescriptionMoreThan200ReturnCode500() {
+    public void addFilmDescriptionMoreThan200ReturnCode400() {
         final Film newFilm = new Film();
         newFilm.setName("Film name");
         newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " +
@@ -68,7 +68,7 @@ class FilmorateApplicationTests {
         newFilm.setDuration(34);
         newFilm.setReleaseDate(LocalDate.of(2004, 4, 16));
         final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -82,25 +82,25 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void addFilmWithWrongReleaseDateReturnCode500() {
+    public void addFilmWithWrongReleaseDateReturnCode400() {
         final Film newFilm = new Film();
         newFilm.setName("Film name");
         newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»)");
         newFilm.setDuration(34);
         newFilm.setReleaseDate(LocalDate.of(1890, 4, 16));
         final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void addFilmWithNegativeDurationReturnCode500() {
+    public void addFilmWithNegativeDurationReturnCode400() {
         final Film newFilm = new Film();
         newFilm.setName("Film name");
         newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»)");
         newFilm.setDuration(-34);
         newFilm.setReleaseDate(LocalDate.of(1990, 4, 16));
         final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -115,35 +115,35 @@ class FilmorateApplicationTests {
     }
 
     @Test
-    public void addIncorrectLoginReturnCode500() {
+    public void addIncorrectLoginReturnCode400() {
         final User newUser = new User();
         newUser.setName("AdamLamberd");
         newUser.setLogin("Adam One");
         newUser.setEmail("Adam@hello.ru");
         newUser.setBirthday(LocalDate.of(1990, 4, 16));
         final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/users", port), newUser, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void addIncorrectMailReturnCode500() {
+    public void addIncorrectMailReturnCode400() {
         final User newUser = new User();
         newUser.setName("AdamLamberd");
         newUser.setLogin("AdamOne");
         newUser.setEmail("hello.ru");
         newUser.setBirthday(LocalDate.of(1990, 4, 16));
         final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/users", port), newUser, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void addIncorrectBirthdayReturnCode500() {
+    public void addIncorrectBirthdayReturnCode400() {
         final User newUser = new User();
         newUser.setName("AdamLamberd");
         newUser.setLogin("AdamOne");
         newUser.setEmail("hel@lo.ru");
         newUser.setBirthday(LocalDate.of(2990, 4, 16));
         final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/users", port), newUser, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
