@@ -31,7 +31,7 @@ public class FilmController {
 
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public Film create(@RequestBody Film film) {
         return filmService.getInMemoryFilmStorage().add(film);
     }
