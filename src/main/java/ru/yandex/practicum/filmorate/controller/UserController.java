@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
-import ru.yandex.practicum.filmorate.model.Friend;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import java.util.*;
@@ -48,10 +47,10 @@ public class UserController {
     //добавление в друзья
     @PutMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
-    public Friend addFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
+    public void addFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
-        return userService.add(new Friend(userId, friendId));
+        userService.add(userId, friendId);
     }
 
     // удаление друзей
