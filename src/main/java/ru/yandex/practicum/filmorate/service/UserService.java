@@ -18,7 +18,7 @@ public class UserService {
     @Getter
     private final UserStorage inMemoryUserStorage;
     private final Map<Long, Set<Long>> friends = new HashMap<>();
-    private long currentMaxId = 0;
+
 
     public void add(Long userId, Long friendId) {
         if (!inMemoryUserStorage.getUsers().containsKey(userId)) {
@@ -79,8 +79,7 @@ public class UserService {
             throw new NotFoundException("пользователя с id = " + userId + " нет");
         }
         Set<User> returnUsers = new HashSet<>();
-        if (!friends.containsKey(userId) || friends.get(userId).isEmpty())
-        {
+        if (!friends.containsKey(userId) || friends.get(userId).isEmpty()) {
             return returnUsers;
         }
         if (!friends.get(userId).isEmpty()) {
@@ -103,8 +102,4 @@ public class UserService {
         return commonFriends;
     }
 
-    // вспомогательный метод для генерации идентификатора нового поста
-    private long getNextId() {
-        return ++currentMaxId;
-    }
 }

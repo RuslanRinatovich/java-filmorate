@@ -5,10 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -23,50 +21,50 @@ public class FilmService {
     private final UserStorage inMemoryUserStorage;
     @Getter
     private final FilmStorage inMemoryFilmStorage;
-    private final Map<Long, Like> likes = new HashMap<>();
-    private long currentMaxId = 0;
+    private final Map<Long, Set<Long>> likes = new HashMap<>();
 
-    public Like add(Like like) {
-        Optional<Like> like1 = likes.values().stream().filter(f -> (Objects.equals(f.getUserId(), like.getUserId())) &&
-                (Objects.equals(f.getFilmId(), like.getFilmId()))).findFirst();
-        if (like1.isPresent()) {
-            logger.error("такая запись уже есть");
-            try {
-                throw new InternalServerErrorException("такая запись уже есть");
-            } catch (InternalServerErrorException e) {
-                throw new RuntimeException(e);
+
+    public void add(Long filmId, Long userId) {
+        if (!inMemoryUserStorage.getUsers().containsKey(userId)) {
+            logger.error("пользователя с id = " + userId + " нет");
+            throw new NotFoundException("пользователя с id = " + userId + " нет");
+        }
+        if (!inMemoryFilmStorage.getFilms().containsKey(filmId)) {
+            logger.error("Фильма с id = " + filmId + " нет");
+            throw new NotFoundException("Фильма с id = " + filmId + " нет");
+        }
+
+        if (likes.containsKey(filmId)) {
+            likes.get(filmId).add(userId);
+            logger.info("Добавлен новый лайк");
+        } else {
+            likes.put(filmId, new HashSet<>(Arrays.asList(userId)));
+        }
+        Film film = inMemoryFilmStorage.getById(filmId);
+        film.setLikesCount(film.getLikesCount() + 1);
+
+    }
+
+    public void delete(Long filmId, Long userId) {
+        if (!inMemoryUserStorage.getUsers().containsKey(userId)) {
+            logger.error("пользователя с id = " + userId + " нет");
+            throw new NotFoundException("пользователя с id = " + userId + " нет");
+        }
+        if (!inMemoryFilmStorage.getFilms().containsKey(filmId)) {
+            logger.error("Фильма с id = " + filmId + " нет");
+            throw new NotFoundException("Фильма с id = " + filmId + " нет");
+        }
+
+        if (likes.containsKey(filmId)) {
+            if (likes.get(filmId).contains(userId)) {
+                likes.get(filmId).remove(userId);
+                if (likes.get(filmId).isEmpty()) {
+                    likes.remove(userId);
+                }
+                Film film = inMemoryFilmStorage.getById(filmId);
+                film.setLikesCount(film.getLikesCount() - 1);
             }
         }
-        if (!inMemoryUserStorage.getUsers().containsKey(like.getUserId())) {
-            logger.error("пользователя с id = " + like.getUserId() + " нет");
-            throw new NotFoundException("пользователя с id = " + like.getUserId() + " нет");
-        }
-        if (!inMemoryFilmStorage.getFilms().containsKey(like.getFilmId())) {
-            logger.error("Фильма с id = " + like.getFilmId() + " нет");
-            throw new NotFoundException("Фильма с id = " + like.getFilmId() + " нет");
-        }
-        like.setId(getNextId());
-        // сохраняем новую публикацию в памяти приложения
-        likes.put(like.getId(), like);
-        Film film = inMemoryFilmStorage.getById(like.getFilmId());
-        film.setLikesCount(film.getLikesCount() + 1);
-        return like;
-    }
-
-    private long getNextId() {
-        return ++currentMaxId;
-    }
-
-    public void delete(Like like) {
-        Optional<Like> like1 = likes.values().stream().filter(f -> (Objects.equals(f.getUserId(), like.getUserId())) &&
-                (Objects.equals(f.getFilmId(), like.getFilmId()))).findFirst();
-        if (like1.isEmpty()) {
-            logger.error("лайка нет");
-            throw new NotFoundException("лайка нет");
-        }
-        Film film = inMemoryFilmStorage.getById(like.getFilmId());
-        film.setLikesCount(film.getLikesCount() - 1);
-        likes.remove(like1.get().getId());
     }
 
     public Collection<Film> findMostPopular(Integer size, Integer from, String sort) {

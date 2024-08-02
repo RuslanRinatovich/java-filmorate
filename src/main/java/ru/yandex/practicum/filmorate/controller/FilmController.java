@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Like;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 
@@ -44,11 +43,11 @@ public class FilmController {
 
     // добавить лайк
     @PutMapping("/{id}/like/{userId}")
-    public Like like(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
+    public void like(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
         // добавьте необходимые проверки
         if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
-        return filmService.add(new Like(filmId, userId));
+        filmService.add(filmId, userId);
     }
 
     // удалить лайк
@@ -58,7 +57,7 @@ public class FilmController {
         // добавьте необходимые проверки
         if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
-        filmService.delete(new Like(filmId, userId));
+        filmService.delete(filmId, userId);
     }
 
     @GetMapping("/popular")
