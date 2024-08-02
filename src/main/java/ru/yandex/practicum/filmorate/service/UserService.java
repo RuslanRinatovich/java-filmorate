@@ -28,7 +28,11 @@ public class UserService {
                 (Objects.equals(f.getSecondUserId(), friend.getFirtsUserId()))).findFirst();
         if (friend1.isPresent()) {
             logger.error("такая запись уже есть");
-            throw new InternalServerErrorException("такая запись уже есть");
+            try {
+                throw new InternalServerErrorException("такая запись уже есть");
+            } catch (InternalServerErrorException e) {
+                throw new RuntimeException(e);
+            }
         }
         if (!inMemoryUserStorage.getUsers().containsKey(friend.getFirtsUserId())) {
             logger.error("пользователя с id = " + friend.getFirtsUserId() + " нет");

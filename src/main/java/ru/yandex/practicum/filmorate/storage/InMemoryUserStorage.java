@@ -73,7 +73,11 @@ public class InMemoryUserStorage implements UserStorage {
                 Optional<User> currentUser = users.values().stream().filter(u -> u.getEmail().equals(newUser.getEmail())).findFirst();
                 if (currentUser.isPresent()) {
                     logger.error("Этот имейл уже используется");
-                    throw new InternalServerErrorException("Этот имейл уже используется");
+                    try {
+                        throw new InternalServerErrorException("Этот имейл уже используется");
+                    } catch (InternalServerErrorException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 oldUser.setEmail(newUser.getEmail());
             }

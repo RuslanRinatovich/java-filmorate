@@ -31,7 +31,11 @@ public class FilmService {
                 (Objects.equals(f.getFilmId(), like.getFilmId()))).findFirst();
         if (like1.isPresent()) {
             logger.error("такая запись уже есть");
-            throw new InternalServerErrorException("такая запись уже есть");
+            try {
+                throw new InternalServerErrorException("такая запись уже есть");
+            } catch (InternalServerErrorException e) {
+                throw new RuntimeException(e);
+            }
         }
         if (!inMemoryUserStorage.getUsers().containsKey(like.getUserId())) {
             logger.error("пользователя с id = " + like.getUserId() + " нет");
