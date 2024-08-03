@@ -5,15 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -21,51 +15,22 @@ public class InMemoryFilmStorage implements FilmStorage {
     private static final Logger logger = LoggerFactory.getLogger(InMemoryFilmStorage.class);
     @Getter
     private final Map<Long, Film> films = new HashMap<>();
+    @Getter
+    private final Map<Long, Set<Long>> likes = new HashMap<>();
     private long currentMaxId = 0;
-
-    //метод для проверки пользователя
-    void validateFilmsData(Film film) {
-        if (film.getName() == null || film.getName().isBlank()) {
-            logger.error("название не может быть пустым");
-            throw new ValidationException("название не может быть пустым");
-        }
-        if (film.getDescription() != null && film.getDescription().length() > 200) {
-            logger.error("максимальная длина описания — 200 символов");
-            throw new ValidationException("максимальная длина описания — 200 символов");
-        }
-        if (film.getDuration() <= 0) {
-            logger.error("продолжительность фильма должна быть положительным числом");
-            throw new ValidationException("продолжительность фильма должна быть положительным числом");
-        }
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, Calendar.DECEMBER, 28))) {
-            logger.error("дата релиза — не раньше 28 декабря 1895 года");
-            throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
-        }
-    }
 
     @Override
     public Film add(Film film) {
-        validateFilmsData(film);
-        // формируем дополнительные данные
         film.setId(getNextId());
         film.setLikesCount(0L);
-        // сохраняем новую публикацию в памяти приложения
         films.put(film.getId(), film);
+        logger.info("Фильм добавлен");
         return film;
     }
 
     @Override
     public Film update(Film newFilm) {
-        // проверяем необходимые условия
-        if (newFilm.getId() == null) {
-            throw new IncorrectParameterException("Id должен быть указан");
-        }
-        if (!films.containsKey(newFilm.getId())) {
-            logger.warn("Фильм с id = " + newFilm.getId() + " не найден");
-            throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");
-        }
         Film oldFilm = films.get(newFilm.getId());
-        validateFilmsData(newFilm);
         oldFilm.setName(newFilm.getName());
         oldFilm.setDuration(newFilm.getDuration());
         oldFilm.setReleaseDate(newFilm.getReleaseDate());
@@ -80,28 +45,35 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public void delete(Long filmId) {
-        // проверяем необходимые условия
-        if (filmId == null) {
-            throw new IncorrectParameterException("Id должен быть указан");
-        }
-        if (!films.containsKey(filmId)) {
-            logger.warn("Фильм с id = " + filmId + " не найден");
-            throw new NotFoundException("Фильм с id = " + filmId + " не найден");
-        }
-
+        likes.remove(filmId);
         films.remove(filmId);
     }
 
+
     @Override
-    public Film getById(Long filmId) {
-        if (filmId == null) {
-            throw new IncorrectParameterException("Id должен быть указан");
+    public void addLike(Long filmId, Long userId) {
+        if (!likes.containsKey(filmId)) {
+            likes.get(filmId).add(userId);
+            logger.info("Добавлен новый лайк");
+        } else {
+            likes.put(filmId, new HashSet<>(Arrays.asList(userId)));
         }
-        if (!films.containsKey(filmId)) {
-            logger.warn("Фильм с id = " + filmId + " не найден");
-            throw new NotFoundException("Фильм с id = " + filmId + " не найден");
+        Film film = films.get(filmId);
+        film.setLikesCount(film.getLikesCount() + 1);
+    }
+
+    @Override
+    public void deleteLike(Long filmId, Long userId) {
+        if (likes.containsKey(filmId)) {
+            if (likes.get(filmId).contains(userId)) {
+                likes.get(filmId).remove(userId);
+                if (likes.get(filmId).isEmpty()) {
+                    likes.remove(userId);
+                }
+                Film film = films.get(filmId);
+                film.setLikesCount(film.getLikesCount() - 1);
+            }
         }
-        return films.get(filmId);
     }
 
     // вспомогательный метод для генерации идентификатора нового поста

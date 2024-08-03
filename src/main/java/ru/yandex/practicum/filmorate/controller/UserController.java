@@ -26,22 +26,22 @@ public class UserController {
     // вернуть всех пользователей пользователя
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<User> findAll() {
-        return userService.getInMemoryUserStorage().getUsers().values();
+    public Collection<User> getUsers() {
+        return userService.getUsers();
     }
 
     // добавить пользователя
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public User create(@RequestBody User user) {
-        return userService.getInMemoryUserStorage().add(user);
+    public User createUser(@RequestBody User user) {
+        return userService.addUser(user);
     }
 
     // обновить пользователя
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public User update(@RequestBody User newUser) {
-        return userService.getInMemoryUserStorage().update(newUser);
+    public User updateUser(@RequestBody User newUser) {
+        return userService.updateUser(newUser);
     }
 
     //добавление в друзья
@@ -50,7 +50,7 @@ public class UserController {
     public void addFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
-        userService.add(userId, friendId);
+        userService.addFriend(userId, friendId);
     }
 
     // удаление друзей
