@@ -34,6 +34,7 @@ public class FilmController {
         if (filmId == null) throw new IncorrectParameterException("Id должен быть указан");
         return filmService.getFilm(filmId);
     }
+
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public Film createFilm(@RequestBody Film film) {
