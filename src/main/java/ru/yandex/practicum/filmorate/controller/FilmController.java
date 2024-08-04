@@ -28,7 +28,12 @@ public class FilmController {
         return filmService.getFilms();
     }
 
-
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Film getFilm(@PathVariable(name = "id", required = false) final Long filmId) {
+        if (filmId == null) throw new IncorrectParameterException("Id должен быть указан");
+        return filmService.getFilm(filmId);
+    }
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public Film createFilm(@RequestBody Film film) {
@@ -38,7 +43,15 @@ public class FilmController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public Film updateFilm(@RequestBody Film newFilm) {
+        if (newFilm.getId() == null) throw new IncorrectParameterException("Id должен быть указан");
         return filmService.updateFilm(newFilm);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteFilm(@PathVariable(name = "id", required = false) final Long filmId) {
+        if (filmId == null) throw new IncorrectParameterException("Id должен быть указан");
+        filmService.deleteFilm(filmId);
     }
 
     // добавить лайк

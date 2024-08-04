@@ -60,10 +60,6 @@ public class FilmService {
 
     // обновить фильм
     public Film updateFilm(Film newFilm) {
-        // проверяем необходимые условия
-        if (newFilm.getId() == null) {
-            throw new IncorrectParameterException("Id должен быть указан");
-        }
         if (!filmStorage.getFilms().containsKey(newFilm.getId())) {
             logger.warn("Фильм с id = " + newFilm.getId() + " не найден");
             throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");
@@ -74,10 +70,6 @@ public class FilmService {
 
     // удалить фильм
     public void deleteFilm(Long filmId) {
-        // проверяем необходимые условия
-        if (filmId == null) {
-            throw new IncorrectParameterException("Id должен быть указан");
-        }
         if (!filmStorage.getFilms().containsKey(filmId)) {
             logger.warn("Фильм с id = " + filmId + " не найден");
             throw new NotFoundException("Фильм с id = " + filmId + " не найден");
@@ -86,9 +78,6 @@ public class FilmService {
     }
 
     public Film getFilm(Long filmId) {
-        if (filmId == null) {
-            throw new IncorrectParameterException("Id должен быть указан");
-        }
         if (!filmStorage.getFilms().containsKey(filmId)) {
             logger.warn("Фильм с id = " + filmId + " не найден");
             throw new NotFoundException("Фильм с id = " + filmId + " не найден");

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+
 import java.util.*;
 
 
@@ -30,6 +31,20 @@ public class UserController {
         return userService.getUsers();
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public User getUser(@PathVariable(name = "id", required = false) final Long userId) {
+        if (userId == null) throw new IncorrectParameterException("Id должен быть указан");
+        return userService.getUser(userId);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUser(@PathVariable(name = "id", required = false) final Long userId) {
+        if (userId == null) throw new IncorrectParameterException("Id должен быть указан");
+        userService.deleteUser(userId);
+    }
+
     // добавить пользователя
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
@@ -41,6 +56,7 @@ public class UserController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public User updateUser(@RequestBody User newUser) {
+        if (newUser.getId() == null) throw new IncorrectParameterException("Id должен быть указан");
         return userService.updateUser(newUser);
     }
 

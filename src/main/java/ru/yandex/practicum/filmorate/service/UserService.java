@@ -58,10 +58,6 @@ public class UserService {
 
     // обновить фильм
     public User updateUser(User newUser) {
-        if (newUser.getId() == null) {
-            logger.error("Id должен быть указан");
-            throw new IncorrectParameterException("Id должен быть указан");
-        }
         if (userStorage.getUsers().containsKey(newUser.getId())) {
             User oldUser = userStorage.getUsers().get(newUser.getId());
             // указан новый адрес электронной почты и в приложении уже есть пользователь с таким адресом
@@ -88,10 +84,6 @@ public class UserService {
 
     // удалить пользователя
     public void deleteUser(Long userId) {
-        // проверяем необходимые условия
-        if (userId == null) {
-            throw new IncorrectParameterException("Id должен быть указан");
-        }
         if (!userStorage.getUsers().containsKey(userId)) {
             logger.warn("Пользователь с id = " + userId + " не найден");
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
@@ -100,9 +92,6 @@ public class UserService {
     }
 
     public User getUser(Long userId) {
-        if (userId == null) {
-            throw new IncorrectParameterException("Id должен быть указан");
-        }
         if (!userStorage.getUsers().containsKey(userId)) {
             logger.warn("Пользователь с id = " + userId + " не найден");
             throw new NotFoundException("Пользователь с id = " + userId + " не найден");
