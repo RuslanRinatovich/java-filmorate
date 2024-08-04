@@ -52,7 +52,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public void addLike(Long filmId, Long userId) {
-        if (!likes.containsKey(filmId)) {
+        if (likes.containsKey(filmId)) {
             likes.get(filmId).add(userId);
             logger.info("Добавлен новый лайк");
         } else {

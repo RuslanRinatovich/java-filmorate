@@ -43,7 +43,7 @@ public class FilmController {
 
     // добавить лайк
     @PutMapping("/{id}/like/{userId}")
-    public void updateLike(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
+    public void addLike(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
         // добавьте необходимые проверки
         if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
