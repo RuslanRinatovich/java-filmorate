@@ -10,7 +10,7 @@ public class HomeController {
 
     @GetMapping
     public String homePage() {
-        return "Приветствуем вас, в приложении ФИльмРате";
+        return "Приветствуем вас, в приложении ФИльмРате, версия 1.0";
     }
 }
 
