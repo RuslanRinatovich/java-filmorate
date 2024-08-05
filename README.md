@@ -3,7 +3,7 @@ Template repository for Filmorate project.
 
 # ER-диаграмма для БД filmorate
 
-![er-filmorate.png](er-filmorate.png)
+![er-filmorate.png](src/main/resources/er-filmorate.png)
 
 
 ## Описание структуры БД
