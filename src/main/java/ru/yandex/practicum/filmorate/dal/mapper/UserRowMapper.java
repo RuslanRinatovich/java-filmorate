@@ -14,8 +14,9 @@ import java.time.ZoneId;
 public class UserRowMapper implements RowMapper<User> {
 
     public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        User user = new User(resultSet.getLong("id"), resultSet.getString("email"), resultSet.getString("login"));
-
+        User user = new User(resultSet.getString("email"), resultSet.getString("login"));
+        user.setId( resultSet.getLong("id"));
+        user.setName( resultSet.getString("name"));
         LocalDate birthday = resultSet.getDate("birthday").toLocalDate();
         user.setBirthday(birthday);
         return user;

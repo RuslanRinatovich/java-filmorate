@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -27,38 +28,41 @@ public class UserController {
     // вернуть всех пользователей пользователя
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Collection<User> getUsers() {
+    public Collection<UserDto> getUsers() {
         return userService.getUsers();
     }
 
-//    @GetMapping("/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public User getUser(@PathVariable(name = "id", required = false) final Long userId) {
-//        if (userId == null) throw new IncorrectParameterException("Id должен быть указан");
-//        return userService.getUser(userId);
-//    }
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto getUser(@PathVariable(name = "id", required = false) final Long userId) {
+        if (userId == null) throw new IncorrectParameterException("Id должен быть указан");
+        return userService.getUser(userId);
+    }
+
+    //    // добавить пользователя
+    @PostMapping
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto createUser(@RequestBody User user) {
+        return userService.addUser(user);
+    }
+        // обновить пользователя
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public User updateUser(@RequestBody User newUser) {
+        if (newUser.getId() == null) throw new IncorrectParameterException("Id должен быть указан");
+        return userService.updateUser(newUser);
+    }
 //
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void deleteUser(@PathVariable(name = "id", required = false) final Long userId) {
-//        if (userId == null) throw new IncorrectParameterException("Id должен быть указан");
-//        userService.deleteUser(userId);
-//    }
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Boolean deleteUser(@PathVariable(name = "id", required = false) final Long userId) {
+        if (userId == null) throw new IncorrectParameterException("Id должен быть указан");
+        return userService.deleteUser(userId);
+    }
+
+
 //
-//    // добавить пользователя
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public User createUser(@RequestBody User user) {
-//        return userService.addUser(user);
-//    }
-//
-//    // обновить пользователя
-//    @PutMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public User updateUser(@RequestBody User newUser) {
-//        if (newUser.getId() == null) throw new IncorrectParameterException("Id должен быть указан");
-//        return userService.updateUser(newUser);
-//    }
+
 //
 //    //добавление в друзья
 //    @PutMapping("/{id}/friends/{friendId}")
