@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
@@ -25,49 +26,7 @@ import java.util.stream.Collectors;
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserDbStorage userStorage;
-    private final FilmStorage filmStorage;
-
-
-//
-//
-
-//
-//    public void addFriend(Long userId, Long friendId) {
-//        if (!userStorage.getUsers().containsKey(userId)) {
-//            logger.error("пользователя с id = " + userId + " нет");
-//            throw new NotFoundException("пользователя с id = " + userId + " нет");
-//        }
-//        if (!userStorage.getUsers().containsKey(friendId)) {
-//            logger.error("пользователя с id = " + friendId + " нет");
-//            throw new NotFoundException("пользователя с id = " + friendId + " нет");
-//        }
-//        userStorage.addFriend(userId, friendId);
-//    }
-//
-//
-
-//
-//    public Collection<User> getFriends(Long userId) {
-//        if (!userStorage.getUsers().containsKey(userId)) {
-//            logger.error("пользователя с id = " + userId + " нет");
-//            throw new NotFoundException("пользователя с id = " + userId + " нет");
-//        }
-//        Set<User> returnUsers = new HashSet<>();
-//        if (!userStorage.getFriends().containsKey(userId) || userStorage.getFriends().get(userId).isEmpty()) {
-//            return returnUsers;
-//        }
-//        if (!userStorage.getFriends().get(userId).isEmpty()) {
-//            List<Long> friends1 = userStorage.getFriends().get(userId).stream().sorted(Long::compareTo).toList();
-//            for (Long f : friends1) {
-//                returnUsers.add(userStorage.getUsers().get(f));
-//            }
-//        }
-//        return returnUsers;
-//    }
-//
-
-
-
+    private final FilmDbStorage filmStorage;
 
 
     void validateUsersData(User user) {

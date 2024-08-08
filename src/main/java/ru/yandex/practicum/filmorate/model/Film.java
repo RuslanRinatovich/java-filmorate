@@ -9,14 +9,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@Builder
+
 @Data
 public class Film {
-    @NonNull
     private Long id;
-    @NonNull
     private Long ratingId;
-    @NonNull
     private String name;
     private String description;
     private LocalDate releaseDate;

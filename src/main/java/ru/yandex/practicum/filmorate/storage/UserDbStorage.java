@@ -18,8 +18,8 @@ import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
-public class UserDbStorage {
-    private static final Logger logger = LoggerFactory.getLogger(InMemoryUserStorage.class);
+public class UserDbStorage implements UserStorage {
+    private static final Logger logger = LoggerFactory.getLogger(UserDbStorage.class);
     private final UserRepository userRepository;
     private final FriendshipRepository friendshipRepository;
     public List<User> getUsers() {
