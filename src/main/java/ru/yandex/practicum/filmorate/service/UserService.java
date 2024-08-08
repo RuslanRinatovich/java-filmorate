@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
+import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
@@ -44,18 +45,7 @@ public class UserService {
 //    }
 //
 //
-//    public void deleteFriend(Long userId, Long friendId) {
-//        if (!userStorage.getUsers().containsKey(userId)) {
-//            logger.error("пользователя с id = " + userId + " нет");
-//            throw new NotFoundException("пользователя с id = " + userId + " нет");
-//        }
-//        if (!userStorage.getUsers().containsKey(friendId)) {
-//            logger.error("пользователя с id = " + friendId + " нет");
-//            throw new NotFoundException("пользователя с id = " + friendId + " нет");
-//        }
-//        userStorage.deleteFriend(userId, friendId);
-//
-//    }
+
 //
 //    public Collection<User> getFriends(Long userId) {
 //        if (!userStorage.getUsers().containsKey(userId)) {
@@ -75,16 +65,7 @@ public class UserService {
 //        return returnUsers;
 //    }
 //
-//    public Collection<User> getCommonFriends(Long userId, Long otherUserId) {
-//        Set<User> firstUserFriends = new HashSet<>(getFriends(userId));
-//        Set<User> secondUserFriends = new HashSet<>(getFriends(otherUserId));
-//        Set<User> commonFriends = new HashSet<>();
-//        if (firstUserFriends.isEmpty() || secondUserFriends.isEmpty())
-//            return commonFriends;
-//        commonFriends.addAll(firstUserFriends);
-//        commonFriends.retainAll(secondUserFriends);
-//        return commonFriends;
-//    }
+
 
 
 
@@ -180,7 +161,53 @@ public class UserService {
                 logger.error("пользователя с id = " + friendId + " нет");
                 throw new NotFoundException("пользователя с id = " + friendId + " нет");
             }
-
+        Optional<Friendship> friendship = userStorage.findByFriendshipId(userId, friendId);
+            if (friendship.isPresent()) {
+                logger.error("Пользователь с id = " + userId + " уже добавил пользователя " + friendId + "в друзья");
+                throw new NotFoundException("Пользователь с id = \" + userId + \" уже добавил пользователя \" + friendId + \"в друзья");
+            }
+        Optional<Friendship> friendship1 = userStorage.findByFriendshipId(friendId, userId);
+            if (friendship1.isPresent()) {
+                logger.error("Пользователь с id = " + friendId + " уже добавил пользователя " + userId + "в друзья");
+                throw new NotFoundException("Пользователь с id = " + friendId + " уже добавил пользователя " + userId + "в друзья");
+            }
         userStorage.addFriend(userId, friendId);
+    }
+
+        public Collection<User> getFriends(Long userId) {
+            Optional<User> user = userStorage.getUserById(userId);
+            if (user.isEmpty()) {
+                logger.error("пользователя с id = " + userId + " нет");
+                throw new NotFoundException("пользователя с id = " + userId + " нет");
+            }
+
+        return userStorage.getFriends(userId);
+    }
+
+
+        public void deleteFriend(Long userId, Long friendId) {
+            Optional<User> user = userStorage.getUserById(userId);
+            if (user.isEmpty()) {
+                logger.error("пользователя с id = " + userId + " нет");
+                throw new NotFoundException("пользователя с id = " + userId + " нет");
+            }
+            Optional<User> friend = userStorage.getUserById(friendId);
+            if (friend.isEmpty()) {
+                logger.error("пользователя с id = " + friendId + " нет");
+                throw new NotFoundException("пользователя с id = " + friendId + " нет");
+            }
+        userStorage.deleteFriend(userId, friendId);
+
+    }
+
+        public Collection<User> getCommonFriends(Long userId, Long otherUserId) {
+        Set<User> firstUserFriends = new HashSet<>(getFriends(userId));
+        Set<User> secondUserFriends = new HashSet<>(getFriends(otherUserId));
+        Set<User> commonFriends = new HashSet<>();
+        if (firstUserFriends.isEmpty() || secondUserFriends.isEmpty())
+            return commonFriends;
+        commonFriends.addAll(firstUserFriends);
+        commonFriends.retainAll(secondUserFriends);
+        return commonFriends;
     }
 }

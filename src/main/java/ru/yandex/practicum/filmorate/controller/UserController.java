@@ -61,45 +61,42 @@ public class UserController {
     }
 
 
-//
-
-//
 //    //добавление в друзья
-//    @PutMapping("/{id}/friends/{friendId}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void addFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
-//        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
-//        if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
-//        userService.addFriend(userId, friendId);
-//    }
+    @PutMapping("/{id}/friends/{friendId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
+        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
+        if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
+        userService.addFriend(userId, friendId);
+    }
 //
 //    // удаление друзей
-//    @DeleteMapping("/{id}/friends/{friendId}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void deleteFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
-//        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
-//        if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
-//        userService.deleteFriend(userId, friendId);
-//    }
+    @DeleteMapping("/{id}/friends/{friendId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
+        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
+        if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
+        userService.deleteFriend(userId, friendId);
+    }
 //
 //    //  возвращаем список пользователей, являющихся его друзьями
-//    @GetMapping("/{id}/friends")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Collection<User> like(@PathVariable(name = "id", required = false) final Long userId) {
-//        // добавьте необходимые проверки
-//        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
-//        return userService.getFriends(userId);
-//    }
+    @GetMapping("/{id}/friends")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<User> like(@PathVariable(name = "id", required = false) final Long userId) {
+        // добавьте необходимые проверки
+        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
+        return userService.getFriends(userId);
+    }
 //
 //    // возвращаем список пользователей, являющихся его друзьями.
-//    @GetMapping("/{id}/friends/common/{otherId}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Collection<User> getCommonFriends(@PathVariable(name = "id", required = false) final Long userId,
-//                                             @PathVariable(name = "otherId", required = false) final Long otherUserId) {
-//        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
-//        if (otherUserId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
-//        return userService.getCommonFriends(userId, otherUserId);
-//    }
+    @GetMapping("/{id}/friends/common/{otherId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<User> getCommonFriends(@PathVariable(name = "id", required = false) final Long userId,
+                                             @PathVariable(name = "otherId", required = false) final Long otherUserId) {
+        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
+        if (otherUserId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
+        return userService.getCommonFriends(userId, otherUserId);
+    }
 
 }
 

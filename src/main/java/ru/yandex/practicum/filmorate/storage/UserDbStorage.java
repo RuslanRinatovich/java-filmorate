@@ -5,16 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.dal.FriendshipRepository;
 import ru.yandex.practicum.filmorate.dal.UserRepository;
 import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
+import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Repository
@@ -22,6 +21,7 @@ import java.util.Optional;
 public class UserDbStorage {
     private static final Logger logger = LoggerFactory.getLogger(InMemoryUserStorage.class);
     private final UserRepository userRepository;
+    private final FriendshipRepository friendshipRepository;
     public List<User> getUsers() {
         return userRepository.findAll();
     }
@@ -32,6 +32,10 @@ public class UserDbStorage {
 
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    public Optional<Friendship> findByFriendshipId(long userId, long friendId) {
+        return friendshipRepository.findByFriendshipId(userId, friendId);
     }
 
     public User add(User user) {
@@ -56,6 +60,17 @@ public class UserDbStorage {
     }
 
     public void addFriend(Long userId, Long friendId) {
-       ;
+        Friendship friendship = new Friendship(userId, friendId);
+        friendship.setStatus(true);
+        friendshipRepository.addFriend(friendship);
+
+    }
+    public Collection<User> getFriends(Long userId) {
+        return friendshipRepository.getFriends(userId);
+    }
+
+    public boolean deleteFriend(Long userId, Long friendId)
+    {
+        return friendshipRepository.deleteFriend(userId, friendId);
     }
 }

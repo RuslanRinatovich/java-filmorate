@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -50,6 +51,25 @@ public class BaseRepository<T> {
         }, keyHolder);
 
         Integer id = keyHolder.getKeyAs(Integer.class);
+        if (id != null) {
+            return id;
+        } else {
+            throw new InternalServerErrorException("Не удалось сохранить данные");
+        }
+    }
+
+    protected Map<String, Object> insertWithPrimaryKey(String query, Object... params) throws InternalServerErrorException {
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbc.update(connection -> {
+            PreparedStatement ps = connection
+                    .prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            for (int idx = 0; idx < params.length; idx++) {
+                ps.setObject(idx + 1, params[idx]);
+            }
+            return ps;
+        }, keyHolder);
+
+        Map<String, Object> id = keyHolder.getKeys();
         if (id != null) {
             return id;
         } else {
