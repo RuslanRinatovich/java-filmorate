@@ -11,6 +11,6 @@ import java.util.List;
 public class Genre {
     @NonNull
     private Long id;
-    @NonNull private String name;
+    private String name;
 
 }

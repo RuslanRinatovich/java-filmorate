@@ -8,7 +8,7 @@ public final class FilmMapper {
     public static FilmDto mapToFilmDto(Film film) {
         FilmDto dto = new FilmDto();
         dto.setId(film.getId());
-        dto.setRatingId(film.getRatingId());
+        dto.setRate(film.getRate());
         dto.setName(film.getName());
         dto.setDescription(film.getDescription());
         dto.setReleaseDate(film.getReleaseDate());

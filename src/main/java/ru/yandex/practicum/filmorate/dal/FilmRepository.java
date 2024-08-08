@@ -17,7 +17,7 @@ public class FilmRepository extends BaseRepository<Film> {
     private static final String FIND_ALL_FILMS = "SELECT * FROM FILM";
     private static final String FIND_BY_GENRE = "SELECT * FROM FILM WHERE GENRE_ID = ?";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM FILM WHERE ID = ?";
-    private static final String INSERT_QUERY = "INSERT INTO FILM(RATING_ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION) VALUES (?, ?, ?, ?, ?)";
+    private static final String INSERT_QUERY = "INSERT INTO FILM(RATE, NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_QUERY = "UPDATE FILM SET RATING_ID = ?, NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ? WHERE ID = ?";
     private static final String DELETE_BY_ID_QUERY = "DELETE FROM FILM WHERE ID = ?";
 
@@ -43,13 +43,15 @@ public class FilmRepository extends BaseRepository<Film> {
     }
     @SneakyThrows
     public Film add(Film film) {
+
         long id = insert(
                 INSERT_QUERY,
-                film.getRatingId(),
+                film.getRate(),
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
-                film.getDuration()
+                film.getDuration(),
+                film.getMpa().getId()
         );
 
         film.setId(id);
@@ -59,7 +61,7 @@ public class FilmRepository extends BaseRepository<Film> {
     public Film update(Film film) {
         update(
                 UPDATE_QUERY,
-                film.getRatingId(),
+                film.getRate(),
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),

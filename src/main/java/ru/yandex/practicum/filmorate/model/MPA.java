@@ -4,14 +4,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
-import java.util.List;
-
 @Builder
 @Data
-public class Rating {
+public class MPA {
     @NonNull
     private Long id;
-    @NonNull private String name;
-    @NonNull private String description;
+    private String name;
+    private String description;
 
 }
