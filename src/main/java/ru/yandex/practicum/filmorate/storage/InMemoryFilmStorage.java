@@ -22,7 +22,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film add(Film film) {
         film.setId(getNextId());
-        film.setLikesCount(0L);
+       // film.setLikesCount(0L);
         films.put(film.getId(), film);
         logger.info("Фильм добавлен");
         return film;
@@ -35,10 +35,10 @@ public class InMemoryFilmStorage implements FilmStorage {
         oldFilm.setDuration(newFilm.getDuration());
         oldFilm.setReleaseDate(newFilm.getReleaseDate());
         oldFilm.setDescription(newFilm.getDescription());
-        if (newFilm.getLikesCount() == null) {
-            newFilm.setLikesCount(0L);
-        }
-        oldFilm.setLikesCount(newFilm.getLikesCount());
+//        if (newFilm.getLikesCount() == null) {
+//            newFilm.setLikesCount(0L);
+//        }
+//        oldFilm.setLikesCount(newFilm.getLikesCount());
         logger.info("Информация обновлена");
         return oldFilm;
     }
@@ -59,7 +59,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             likes.put(filmId, new HashSet<>(Arrays.asList(userId)));
         }
         Film film = films.get(filmId);
-        film.setLikesCount(film.getLikesCount() + 1);
+        //film.setLikesCount(film.getLikesCount() + 1);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class InMemoryFilmStorage implements FilmStorage {
                     likes.remove(userId);
                 }
                 Film film = films.get(filmId);
-                film.setLikesCount(film.getLikesCount() - 1);
+              //  film.setLikesCount(film.getLikesCount() - 1);
             }
         }
     }
