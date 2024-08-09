@@ -1,27 +1,19 @@
 package ru.yandex.practicum.filmorate.dal;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import ru.yandex.practicum.filmorate.dal.mapper.FilmRowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Repository
 public class FilmRepository extends BaseRepository<Film> {
 
     private static final String FIND_ALL_QUERY = "SELECT * FROM FILM  ";
-    private static final String FIND_BY_GENRE = "SELECT * FROM FILM WHERE GENRE_ID = ?";
     private static final String GET_LIKES_COUNT = "SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = ?";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM FILM WHERE ID = ?";
     private static final String INSERT_QUERY = "INSERT INTO FILM(RATE, NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?, ?)";
@@ -29,18 +21,15 @@ public class FilmRepository extends BaseRepository<Film> {
     private static final String UPDATE_QUERY = "UPDATE FILM SET RATE = ?, NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ? WHERE ID = ?";
     private static final String DELETE_BY_ID_QUERY = "DELETE FROM FILM WHERE ID = ?";
     private static final String DELETE_FILM_GENRES = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
+
     public FilmRepository(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper, Film.class);
     }
 
     public List<Film> findAll() {
         return jdbc.query(FIND_ALL_QUERY, mapper);
-        //return findMany(FIND_ALL_QUERY);
     }
 
-    public Optional<Film> findByGenre(Long genreId) {
-        return findOne(FIND_BY_GENRE, genreId);
-    }
 
     public Integer getLikesCount(Film film) {
         return jdbc.queryForObject(GET_LIKES_COUNT, Integer.class, film.getId());
@@ -112,8 +101,7 @@ public class FilmRepository extends BaseRepository<Film> {
         return film;
     }
 
-    public boolean deleteFilmGenres(Long filmId)
-    {
+    public boolean deleteFilmGenres(Long filmId) {
         int rowsDeleted = jdbc.update(DELETE_FILM_GENRES, filmId);
         return rowsDeleted > 0;
     }

@@ -1,149 +1,148 @@
 package ru.yandex.practicum.filmorate;
 
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.boot.test.web.server.LocalServerPort;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase
+@SpringBootTest
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 class FilmorateApplicationTests {
-//    @LocalServerPort
-//    private int port;
-//    @Autowired
-//    private TestRestTemplate restTemplate;
-//
-//    @Test
-//    void contextLoads() {
-//    }
-//
-//    @Test
-//    void greetingShouldReturnDefaultMessage() throws Exception {
-//        assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/home",
-//                String.class)).contains("Приветствуем вас, в приложении ФИльмРате");
-//    }
-//
-//    @Test
-//    public void addCorrectFilmReturnCode200() {
-//
-//        final Film newFilm = new Film();
-//        newFilm.setName("Фильм 1");
-//        newFilm.setDescription("Фильм 1");
-//        newFilm.setDuration(34);
-//        newFilm.setReleaseDate(LocalDate.of(2004, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//    }
-//
-//
-//    @Test
-//    public void addFilmWithoutNameReturnCode400() {
-//        final Film newFilm = new Film();
-//        newFilm.setName("");
-//        newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»)");
-//        newFilm.setDuration(34);
-//        newFilm.setReleaseDate(LocalDate.of(2004, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-//    }
-//
-//    @Test
-//    public void addFilmDescriptionMoreThan200ReturnCode400() {
-//        final Film newFilm = new Film();
-//        newFilm.setName("Film name");
-//        newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. " +
-//                "Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, " +
-//                "а именно 20 миллионов. о Куглов, " +
-//                "который за время «своего отсутствия», стал кандидатом Коломбани.");
-//        newFilm.setDuration(34);
-//        newFilm.setReleaseDate(LocalDate.of(2004, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-//    }
-//
-//    @Test
-//    public void addFilmWithNullDescriptionReturnCode200() {
-//        final Film newFilm = new Film();
-//        newFilm.setName("Film name");
-//        newFilm.setDuration(34);
-//        newFilm.setReleaseDate(LocalDate.of(2004, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//    }
-//
-//    @Test
-//    public void addFilmWithWrongReleaseDateReturnCode400() {
-//        final Film newFilm = new Film();
-//        newFilm.setName("Film name");
-//        newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»)");
-//        newFilm.setDuration(34);
-//        newFilm.setReleaseDate(LocalDate.of(1890, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-//    }
-//
-//    @Test
-//    public void addFilmWithNegativeDurationReturnCode400() {
-//        final Film newFilm = new Film();
-//        newFilm.setName("Film name");
-//        newFilm.setDescription("Пятеро друзей ( комик-группа «Шарло»)");
-//        newFilm.setDuration(-34);
-//        newFilm.setReleaseDate(LocalDate.of(1990, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/films", port), newFilm, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-//    }
-//
-//    @Test
-//    public void addCorrectUserReturnCode200() {
-//        final User newUser = new User();
-//        newUser.setName("Adam");
-//        newUser.setLogin("AdamOne");
-//        newUser.setEmail("Adam@hello.ru");
-//        newUser.setBirthday(LocalDate.of(1990, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/users", port), newUser, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-//    }
-//
-//    @Test
-//    public void addIncorrectLoginReturnCode400() {
-//        final User newUser = new User();
-//        newUser.setName("AdamLamberd");
-//        newUser.setLogin("Adam One");
-//        newUser.setEmail("Adam@hello.ru");
-//        newUser.setBirthday(LocalDate.of(1990, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/users", port), newUser, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-//    }
-//
-//    @Test
-//    public void addIncorrectMailReturnCode400() {
-//        final User newUser = new User();
-//        newUser.setName("AdamLamberd");
-//        newUser.setLogin("AdamOne");
-//        newUser.setEmail("hello.ru");
-//        newUser.setBirthday(LocalDate.of(1990, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/users", port), newUser, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-//    }
-//
-//    @Test
-//    public void addIncorrectBirthdayReturnCode400() {
-//        final User newUser = new User();
-//        newUser.setName("AdamLamberd");
-//        newUser.setLogin("AdamOne");
-//        newUser.setEmail("hel@lo.ru");
-//        newUser.setBirthday(LocalDate.of(2990, 4, 16));
-//        final ResponseEntity<String> response = restTemplate.postForEntity(String.format("http://localhost:%d/users", port), newUser, String.class);
-//        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-//    }
+    private static final Logger logger = LoggerFactory.getLogger(FilmorateApplicationTests.class);
+    private final FilmDbStorage filmStorage;
+    private final UserDbStorage userStorage;
+
+    // получение пользователя с id = 1
+    @Test
+    public void testFindUserById() {
+        Optional<User> userOptional = userStorage.getUserById(1);
+        userOptional.ifPresent(user -> logger.info(user.getName()));
+        assertThat(userOptional)
+                .isPresent()
+                .hasValueSatisfying(user ->
+                        assertThat(user).hasFieldOrPropertyWithValue("id", 1L)
+                );
+    }
+
+    // получение всех пользователей
+    @Test
+    public void testFindAllUsers() {
+        List<User> users = userStorage.getUsers();
+        assertThat(users.size()).isEqualTo(20);
+    }
+
+    // получение всех пользователя по емайлу
+    @Test
+    public void testFindUserByEmail() {
+        Optional<User> userOptional = userStorage.getUserByEmail("cursus.vestibulum.mauris@icloud.org");
+        userOptional.ifPresent(user -> logger.info(user.getName()));
+        assertThat(userOptional)
+                .isPresent()
+                .hasValueSatisfying(user ->
+                        assertThat(user).hasFieldOrPropertyWithValue("name", "Mechelle")
+                );
+    }
+
+    // добавить друзей пользователю под номером 3
+    @Test
+    public void addFriendsToUserWithId3() {
+        userStorage.addFriend(3L, 12L);
+        int friendCount = userStorage.getFriends(3L).size();
+        assertThat(friendCount).isEqualTo(1);
+    }
+
+    // получение фильма с id = 1
+    @Test
+    public void testFindFilmById() {
+        Optional<Film> filmOptional = filmStorage.getFilmById(1);
+        filmOptional.ifPresent(film -> logger.info(film.getName()));
+        assertThat(filmOptional)
+                .isPresent()
+                .hasValueSatisfying(film ->
+                        assertThat(film).hasFieldOrPropertyWithValue("name", "По щучьему велению (2023)")
+                );
+    }
+
+    // получение всех фильмов
+    @Test
+    public void testFindAllFilms() {
+        List<Film> films = filmStorage.getFilms();
+        assertThat(films.size()).isEqualTo(3);
+    }
+
+    // получение лайков фильма с id = 1
+    @Test
+    public void testGetFilmsLikesCount() {
+        Film fIlm = new Film();
+        fIlm.setId(1L);
+        int likesCount = filmStorage.getLikesCount(fIlm);
+        assertThat(likesCount).isEqualTo(3);
+    }
+
+    // добавление лайков фильма с id = 3
+    @Test
+    public void addLikeToFilmWithId3() {
+        filmStorage.addLike(3L, 12L);
+        Film fIlm = new Film();
+        fIlm.setId(3L);
+        int likesCount = filmStorage.getLikesCount(fIlm);
+        assertThat(likesCount).isEqualTo(2);
+    }
+
+    // получение жанра с id = 1
+    @Test
+    public void testFindGenreById() {
+        Optional<Genre> genreOptional = filmStorage.getGenreById(1);
+        genreOptional.ifPresent(genre -> logger.info(genre.getName()));
+        assertThat(genreOptional)
+                .isPresent()
+                .hasValueSatisfying(genre ->
+                        assertThat(genre).hasFieldOrPropertyWithValue("name", "Комедия")
+                );
+    }
+
+    // получение всех жанров
+    @Test
+    public void testFindAllGenres() {
+        List<Genre> genres = filmStorage.getGenres();
+        assertThat(genres.size()).isEqualTo(6);
+    }
+
+    // получение MPA с id = 1
+    @Test
+    public void testFindMPAById() {
+        Optional<MPA> mpaOptional = filmStorage.getMPAById(1);
+        mpaOptional.ifPresent(mpa -> logger.info(mpa.getName()));
+        assertThat(mpaOptional)
+                .isPresent()
+                .hasValueSatisfying(mpa ->
+                        assertThat(mpa).hasFieldOrPropertyWithValue("name", "G")
+                );
+    }
+
+    // получение всех жанров
+    @Test
+    public void testFindAllMPAs() {
+        List<MPA> mpas = filmStorage.getMPAs();
+        assertThat(mpas.size()).isEqualTo(5);
+    }
+
 }
+
+

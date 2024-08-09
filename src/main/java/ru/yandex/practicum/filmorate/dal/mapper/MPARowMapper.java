@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.MPA;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 @Component
 public class MPARowMapper implements RowMapper<MPA> {
     @Override

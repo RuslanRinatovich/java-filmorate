@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,12 +14,10 @@ import java.util.Optional;
 
 @Getter
 @Service
+@RequiredArgsConstructor
 public class MPAService {
     private static final Logger logger = LoggerFactory.getLogger(MPAService.class);
     private final FilmDbStorage filmStorage;
-    public MPAService(FilmDbStorage filmStorage) {
-        this.filmStorage = filmStorage;
-    }
 
     public Collection<MPA> getMPAs() {
         return filmStorage.getMPAs();

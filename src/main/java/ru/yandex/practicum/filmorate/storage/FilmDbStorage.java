@@ -3,24 +3,29 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.dal.*;
+import ru.yandex.practicum.filmorate.dal.FilmLikeRepository;
+import ru.yandex.practicum.filmorate.dal.FilmRepository;
+import ru.yandex.practicum.filmorate.dal.GenreRepository;
+import ru.yandex.practicum.filmorate.dal.MPARepository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPA;
-import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 import java.util.Optional;
 
+@Qualifier
 @Repository
 @RequiredArgsConstructor
-public class FilmDbStorage {
+public class FilmDbStorage implements FilmStorage {
     private static final Logger logger = LoggerFactory.getLogger(FilmDbStorage.class);
     private final FilmRepository filmRepository;
     private final GenreRepository genreRepository;
     private final MPARepository mpaRepository;
     private final FilmLikeRepository filmLikeRepository;
+
     public List<Film> getFilms() {
         return filmRepository.findAll();
     }
@@ -40,10 +45,10 @@ public class FilmDbStorage {
         return filmRepository.update(film);
     }
 
-    public boolean delete(Long filmId)
-    {
+    public boolean delete(Long filmId) {
         return filmRepository.delete(filmId);
     }
+
     public List<Genre> getGenres() {
         return genreRepository.findAll();
     }
@@ -59,19 +64,19 @@ public class FilmDbStorage {
     public List<MPA> getMPAs() {
         return mpaRepository.findAll();
     }
-    public Integer getLikesCount(Film film)
-    {
-        return filmRepository.getLikesCount(film);
-    };
 
-    public void addLike(Long filmId, Long userId)
-    {
+    public Integer getLikesCount(Film film) {
+        return filmRepository.getLikesCount(film);
+    }
+
+    ;
+
+    public void addLike(Long filmId, Long userId) {
 
         filmLikeRepository.add(filmId, userId);
     }
 
-    public void deleteLike(Long filmId, Long userId)
-    {
+    public void deleteLike(Long filmId, Long userId) {
         filmLikeRepository.delete(filmId, userId);
     }
 }

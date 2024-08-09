@@ -3,10 +3,10 @@ package ru.yandex.practicum.filmorate.dal.mapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.FilmLike;
-import ru.yandex.practicum.filmorate.model.Friendship;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 @Component
 public class FilmLikeRowMapper implements RowMapper<FilmLike> {
 

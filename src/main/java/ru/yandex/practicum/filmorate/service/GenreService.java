@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,13 +14,11 @@ import java.util.Optional;
 
 @Getter
 @Service
+@RequiredArgsConstructor
 public class GenreService {
 
     private static final Logger logger = LoggerFactory.getLogger(GenreService.class);
     private final FilmDbStorage filmStorage;
-    public GenreService(FilmDbStorage filmStorage) {
-        this.filmStorage = filmStorage;
-    }
 
     public Collection<Genre> getGenres() {
         return filmStorage.getGenres();

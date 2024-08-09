@@ -1,18 +1,11 @@
 package ru.yandex.practicum.filmorate.dal;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.dal.mapper.UserRowMapper;
-import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
-import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,10 +37,11 @@ public class UserRepository extends BaseRepository<User> {
     public Optional<User> findById(long userId) {
         return findOne(FIND_BY_ID_QUERY, userId);
     }
-    public boolean delete(long userId)
-    {
+
+    public boolean delete(long userId) {
         return delete(DELETE_BY_ID_QUERY, userId);
     }
+
     @SneakyThrows
     public User add(User user) {
         long id = insert(
@@ -61,6 +55,7 @@ public class UserRepository extends BaseRepository<User> {
         user.setId(id);
         return user;
     }
+
     @SneakyThrows
     public User update(User user) {
         update(

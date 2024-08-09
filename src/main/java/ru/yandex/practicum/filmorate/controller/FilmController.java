@@ -1,17 +1,15 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
-
-import java.util.*;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/films")
@@ -64,7 +62,8 @@ public class FilmController {
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         filmService.addLike(filmId, userId);
     }
-//
+
+    //
 //    // удалить лайк
     @DeleteMapping("/{id}/like/{userId}")
     @ResponseStatus(HttpStatus.OK)

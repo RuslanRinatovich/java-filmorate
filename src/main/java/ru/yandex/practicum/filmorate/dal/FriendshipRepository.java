@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 import java.util.Optional;
+
 @Repository
 public class FriendshipRepository extends BaseRepository<Friendship> {
 
@@ -21,6 +22,7 @@ public class FriendshipRepository extends BaseRepository<Friendship> {
     public FriendshipRepository(JdbcTemplate jdbc, RowMapper<Friendship> mapper) {
         super(jdbc, mapper, Friendship.class);
     }
+
     @SneakyThrows
     public Friendship addFriend(Friendship friendship) {
 
@@ -41,11 +43,10 @@ public class FriendshipRepository extends BaseRepository<Friendship> {
     public List<User> getFriends(long userId) {
         RowMapper<User> userRowMapper = new UserRowMapper();
         return jdbc.query(FIND_FRIENDS_QUERY, userRowMapper, userId);
-        //return findMany(FIND_ALL_QUERY);
+
     }
 
-    public boolean deleteFriend(long userId, long friendId)
-    {
+    public boolean deleteFriend(long userId, long friendId) {
         int rowsDeleted = jdbc.update(DELETE_FRIENDSHIP_QUERY, userId, friendId);
         return rowsDeleted > 0;
     }

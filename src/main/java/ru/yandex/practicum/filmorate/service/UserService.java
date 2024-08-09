@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
 import java.time.LocalDateTime;
@@ -63,10 +62,11 @@ public class UserService {
         Optional<User> user = userStorage.getUserById(userId);
         if (user.isEmpty()) {
             logger.warn("Пользователь с id = " + userId + " не найден");
-            throw new NotFoundException("Пользователь с id = " + userId+ " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
         return UserMapper.mapToUserDto(user.get());
     }
+
     public UserDto addUser(User user) {
         validateUsersData(user);
         return UserMapper.mapToUserDto(userStorage.add(user));
@@ -78,10 +78,9 @@ public class UserService {
         Optional<User> oldUser = userStorage.getUserById(newUser.getId());
         if (oldUser.isEmpty()) {
             logger.warn("Пользователь с id = " + newUser.getId() + " не найден");
-            throw new NotFoundException("Пользователь с id = " + newUser.getId()+ " не найден");
+            throw new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден");
         }
-        if (!Objects.equals(oldUser.get().getEmail(), newUser.getEmail()))
-        {
+        if (!Objects.equals(oldUser.get().getEmail(), newUser.getEmail())) {
             Optional<User> currentUser = userStorage.getUserByEmail(newUser.getEmail());
             if (currentUser.isPresent()) {
                 logger.error("Этот имейл уже используется");
@@ -94,22 +93,22 @@ public class UserService {
 
         }
 
-       return userStorage.update(newUser);
+        return userStorage.update(newUser);
     }
 
 
-//    // удалить пользователя
+    //    // удалить пользователя
     public Boolean deleteUser(Long userId) {
         Optional<User> user = userStorage.getUserById(userId);
         if (user.isEmpty()) {
             logger.warn("Пользователь с id = " + userId + " не найден");
-            throw new NotFoundException("Пользователь с id = " + userId+ " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
 
         return userStorage.delete(userId);
     }
 
-        public void addFriend(Long userId, Long friendId) {
+    public void addFriend(Long userId, Long friendId) {
         Optional<User> user = userStorage.getUserById(userId);
         if (user.isEmpty()) {
             logger.error("пользователя с id = " + userId + " нет");
@@ -117,49 +116,49 @@ public class UserService {
         }
         Optional<User> friend = userStorage.getUserById(friendId);
         if (friend.isEmpty()) {
-                logger.error("пользователя с id = " + friendId + " нет");
-                throw new NotFoundException("пользователя с id = " + friendId + " нет");
-            }
+            logger.error("пользователя с id = " + friendId + " нет");
+            throw new NotFoundException("пользователя с id = " + friendId + " нет");
+        }
         Optional<Friendship> friendship = userStorage.findByFriendshipId(userId, friendId);
-            if (friendship.isPresent()) {
-                logger.error("Пользователь с id = " + userId + " уже добавил пользователя " + friendId + "в друзья");
-                throw new NotFoundException("Пользователь с id = \" + userId + \" уже добавил пользователя \" + friendId + \"в друзья");
-            }
+        if (friendship.isPresent()) {
+            logger.error("Пользователь с id = " + userId + " уже добавил пользователя " + friendId + "в друзья");
+            throw new NotFoundException("Пользователь с id = \" + userId + \" уже добавил пользователя \" + friendId + \"в друзья");
+        }
         Optional<Friendship> friendship1 = userStorage.findByFriendshipId(friendId, userId);
-            if (friendship1.isPresent()) {
-                logger.error("Пользователь с id = " + friendId + " уже добавил пользователя " + userId + "в друзья");
-                throw new NotFoundException("Пользователь с id = " + friendId + " уже добавил пользователя " + userId + "в друзья");
-            }
+        if (friendship1.isPresent()) {
+            logger.error("Пользователь с id = " + friendId + " уже добавил пользователя " + userId + "в друзья");
+            throw new NotFoundException("Пользователь с id = " + friendId + " уже добавил пользователя " + userId + "в друзья");
+        }
         userStorage.addFriend(userId, friendId);
     }
 
-        public Collection<User> getFriends(Long userId) {
-            Optional<User> user = userStorage.getUserById(userId);
-            if (user.isEmpty()) {
-                logger.error("пользователя с id = " + userId + " нет");
-                throw new NotFoundException("пользователя с id = " + userId + " нет");
-            }
+    public Collection<User> getFriends(Long userId) {
+        Optional<User> user = userStorage.getUserById(userId);
+        if (user.isEmpty()) {
+            logger.error("пользователя с id = " + userId + " нет");
+            throw new NotFoundException("пользователя с id = " + userId + " нет");
+        }
 
         return userStorage.getFriends(userId);
     }
 
 
-        public void deleteFriend(Long userId, Long friendId) {
-            Optional<User> user = userStorage.getUserById(userId);
-            if (user.isEmpty()) {
-                logger.error("пользователя с id = " + userId + " нет");
-                throw new NotFoundException("пользователя с id = " + userId + " нет");
-            }
-            Optional<User> friend = userStorage.getUserById(friendId);
-            if (friend.isEmpty()) {
-                logger.error("пользователя с id = " + friendId + " нет");
-                throw new NotFoundException("пользователя с id = " + friendId + " нет");
-            }
+    public void deleteFriend(Long userId, Long friendId) {
+        Optional<User> user = userStorage.getUserById(userId);
+        if (user.isEmpty()) {
+            logger.error("пользователя с id = " + userId + " нет");
+            throw new NotFoundException("пользователя с id = " + userId + " нет");
+        }
+        Optional<User> friend = userStorage.getUserById(friendId);
+        if (friend.isEmpty()) {
+            logger.error("пользователя с id = " + friendId + " нет");
+            throw new NotFoundException("пользователя с id = " + friendId + " нет");
+        }
         userStorage.deleteFriend(userId, friendId);
 
     }
 
-        public Collection<User> getCommonFriends(Long userId, Long otherUserId) {
+    public Collection<User> getCommonFriends(Long userId, Long otherUserId) {
         Set<User> firstUserFriends = new HashSet<>(getFriends(userId));
         Set<User> secondUserFriends = new HashSet<>(getFriends(otherUserId));
         Set<User> commonFriends = new HashSet<>();

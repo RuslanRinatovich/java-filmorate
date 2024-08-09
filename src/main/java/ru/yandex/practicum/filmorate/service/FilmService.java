@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -8,30 +9,25 @@ import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
 @Service
+@RequiredArgsConstructor
 public class FilmService {
     private static final Logger logger = LoggerFactory.getLogger(FilmService.class);
     private final UserDbStorage userStorage;
     private final FilmDbStorage filmStorage;
-
-    public FilmService(UserDbStorage userStorage, FilmDbStorage filmStorage) {
-        this.userStorage = userStorage;
-        this.filmStorage = filmStorage;
-    }
 
     //метод для проверки фильма
     void validateFilmsData(Film film) {
@@ -114,7 +110,7 @@ public class FilmService {
         return film.get();
     }
 
-//
+    //
     public void addLike(Long filmId, Long userId) {
         Optional<User> user = userStorage.getUserById(userId);
         if (user.isEmpty()) {
@@ -128,7 +124,8 @@ public class FilmService {
         }
         filmStorage.addLike(filmId, userId);
     }
-//
+
+    //
     public void deleteLike(Long filmId, Long userId) {
         Optional<User> user = userStorage.getUserById(userId);
         if (user.isEmpty()) {
@@ -142,7 +139,8 @@ public class FilmService {
         }
         filmStorage.deleteLike(filmId, userId);
     }
-//
+
+    //
     public Collection<Film> findMostPopular(Integer size, Integer from, String sort) {
         return filmStorage.getFilms().stream().sorted((p0, p1) -> {
             int comp = filmStorage.getLikesCount(p0).compareTo(filmStorage.getLikesCount(p1)); //прямой порядок сортировки

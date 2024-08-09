@@ -4,24 +4,26 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dal.FriendshipRepository;
 import ru.yandex.practicum.filmorate.dal.UserRepository;
-import ru.yandex.practicum.filmorate.dto.UserDto;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 
+@Qualifier
 @Repository
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
     private static final Logger logger = LoggerFactory.getLogger(UserDbStorage.class);
     private final UserRepository userRepository;
     private final FriendshipRepository friendshipRepository;
+
     public List<User> getUsers() {
         return userRepository.findAll();
     }
@@ -54,8 +56,7 @@ public class UserDbStorage implements UserStorage {
         return userRepository.update(user);
     }
 
-    public boolean delete(Long userId)
-    {
+    public boolean delete(Long userId) {
         return userRepository.delete(userId);
     }
 
@@ -67,12 +68,12 @@ public class UserDbStorage implements UserStorage {
         friendshipRepository.addFriend(friendship);
 
     }
+
     public Collection<User> getFriends(Long userId) {
         return friendshipRepository.getFriends(userId);
     }
 
-    public boolean deleteFriend(Long userId, Long friendId)
-    {
+    public boolean deleteFriend(Long userId, Long friendId) {
         return friendshipRepository.deleteFriend(userId, friendId);
     }
 }

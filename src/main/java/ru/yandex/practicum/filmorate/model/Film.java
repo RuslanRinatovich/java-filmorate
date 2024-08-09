@@ -1,14 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
-import org.springframework.jdbc.core.JdbcTemplate;
-
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 
 @Data

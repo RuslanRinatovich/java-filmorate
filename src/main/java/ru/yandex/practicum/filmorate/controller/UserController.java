@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
-import java.util.*;
+import java.util.Collection;
 
 
 @RestController
@@ -45,14 +45,16 @@ public class UserController {
     public UserDto createUser(@RequestBody User user) {
         return userService.addUser(user);
     }
-        // обновить пользователя
+
+    // обновить пользователя
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public User updateUser(@RequestBody User newUser) {
         if (newUser.getId() == null) throw new IncorrectParameterException("Id должен быть указан");
         return userService.updateUser(newUser);
     }
-//
+
+    //
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Boolean deleteUser(@PathVariable(name = "id", required = false) final Long userId) {
@@ -61,7 +63,7 @@ public class UserController {
     }
 
 
-//    //добавление в друзья
+    //    //добавление в друзья
     @PutMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
     public void addFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
@@ -69,7 +71,8 @@ public class UserController {
         if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
         userService.addFriend(userId, friendId);
     }
-//
+
+    //
 //    // удаление друзей
     @DeleteMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
@@ -78,7 +81,8 @@ public class UserController {
         if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
         userService.deleteFriend(userId, friendId);
     }
-//
+
+    //
 //    //  возвращаем список пользователей, являющихся его друзьями
     @GetMapping("/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
@@ -87,7 +91,8 @@ public class UserController {
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         return userService.getFriends(userId);
     }
-//
+
+    //
 //    // возвращаем список пользователей, являющихся его друзьями.
     @GetMapping("/{id}/friends/common/{otherId}")
     @ResponseStatus(HttpStatus.OK)
