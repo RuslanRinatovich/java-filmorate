@@ -13,6 +13,7 @@ public final class FilmMapper {
         dto.setDescription(film.getDescription());
         dto.setReleaseDate(film.getReleaseDate());
         dto.setDuration(film.getDuration());
+        dto.setMpa(film.getMpa());
         return dto;
     }
 

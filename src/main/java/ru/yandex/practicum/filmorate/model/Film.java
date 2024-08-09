@@ -18,8 +18,9 @@ public class Film {
     private String description;
     private LocalDate releaseDate;
     private int duration;
+    private Long mpaId;
     private MPA mpa;
-    //private List<Genre> genres;
+   // private List<FilmGenre> genres;
     public Long getLikesCount(){
         return 8L;
     }

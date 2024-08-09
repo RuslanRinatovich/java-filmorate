@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public class FilmRepository extends BaseRepository<Film> {
 
-    private static final String FIND_ALL_FILMS = "SELECT * FROM FILM";
+    private static final String FIND_ALL_QUERY = "SELECT * FROM FILM ";
     private static final String FIND_BY_GENRE = "SELECT * FROM FILM WHERE GENRE_ID = ?";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM FILM WHERE ID = ?";
     private static final String INSERT_QUERY = "INSERT INTO FILM(RATE, NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?, ?)";
@@ -26,7 +26,7 @@ public class FilmRepository extends BaseRepository<Film> {
     }
 
     public List<Film> findAll() {
-        return jdbc.query(FIND_ALL_FILMS, mapper);
+        return jdbc.query(FIND_ALL_QUERY, mapper);
         //return findMany(FIND_ALL_QUERY);
     }
 

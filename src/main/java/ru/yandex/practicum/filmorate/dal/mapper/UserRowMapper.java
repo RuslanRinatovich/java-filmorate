@@ -12,7 +12,7 @@ import java.time.ZoneId;
 
 @Component
 public class UserRowMapper implements RowMapper<User> {
-
+    @Override
     public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         User user = new User(resultSet.getString("email"), resultSet.getString("login"));
         user.setId( resultSet.getLong("id"));

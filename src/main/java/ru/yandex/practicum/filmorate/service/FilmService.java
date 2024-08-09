@@ -50,6 +50,12 @@ public class FilmService {
             logger.error("дата релиза — не раньше 28 декабря 1895 года");
             throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
         }
+        if (filmStorage.getMPAById( film.getMpa().getId() ).isEmpty()){
+            logger.warn("MPA с id = " + film.getMpa().getId() + " не найден");
+            throw new ValidationException("MPA с id = " + film.getMpa().getId() + " не найден");
+        }
+
+
     }
 
     // получить все фильмы

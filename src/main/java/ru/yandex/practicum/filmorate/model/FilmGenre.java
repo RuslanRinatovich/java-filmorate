@@ -6,9 +6,7 @@ import lombok.NonNull;
 @Builder
 @Data
 public class FilmGenre {
-    @NonNull
     private Long filmId;
-    @NonNull
     private Long genreId;
 
 }

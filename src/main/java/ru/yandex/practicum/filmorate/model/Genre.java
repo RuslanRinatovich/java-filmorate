@@ -6,10 +6,9 @@ import lombok.NonNull;
 
 import java.util.List;
 
-@Builder
+
 @Data
 public class Genre {
-    @NonNull
     private Long id;
     private String name;
 
