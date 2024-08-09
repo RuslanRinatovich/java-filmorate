@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Data
 public class Film {
+
     private Long id;
     private Long rate;
     private String name;
@@ -20,8 +22,6 @@ public class Film {
     private int duration;
     private Long mpaId;
     private MPA mpa;
-   // private List<FilmGenre> genres;
-    public Long getLikesCount(){
-        return 8L;
-    }
+    private List<Genre> genres;
+
 }

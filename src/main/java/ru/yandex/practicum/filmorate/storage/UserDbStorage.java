@@ -60,7 +60,9 @@ public class UserDbStorage implements UserStorage {
     }
 
     public void addFriend(Long userId, Long friendId) {
-        Friendship friendship = new Friendship(userId, friendId);
+        Friendship friendship = new Friendship();
+        friendship.setUserId(userId);
+        friendship.setFriendId(friendId);
         friendship.setStatus(true);
         friendshipRepository.addFriend(friendship);
 

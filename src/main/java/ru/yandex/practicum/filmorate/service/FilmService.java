@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -50,9 +51,23 @@ public class FilmService {
             logger.error("дата релиза — не раньше 28 декабря 1895 года");
             throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
         }
-        if (filmStorage.getMPAById( film.getMpa().getId() ).isEmpty()){
+        if (filmStorage.getMPAById(film.getMpa().getId()).isEmpty()) {
             logger.warn("MPA с id = " + film.getMpa().getId() + " не найден");
             throw new ValidationException("MPA с id = " + film.getMpa().getId() + " не найден");
+        }
+        boolean isGenreNoExist = false;
+        if (film.getGenres() != null) {
+            for (Genre g : film.getGenres()) {
+                Optional<Genre> genre = filmStorage.getGenreById(g.getId());
+                if (genre.isEmpty()) {
+                    isGenreNoExist = true;
+                    break;
+                }
+            }
+            if (isGenreNoExist) {
+                logger.warn("Жанр не найден");
+                throw new ValidationException("Жанр не найден");
+            }
         }
 
 
@@ -100,37 +115,41 @@ public class FilmService {
     }
 
 //
-//    public void addLike(Long filmId, Long userId) {
-//        if (!userStorage.getUsers().containsKey(userId)) {
-//            logger.error("пользователя с id = " + userId + " нет");
-//            throw new NotFoundException("пользователя с id = " + userId + " нет");
-//        }
-//        if (!filmStorage.getFilms().containsKey(filmId)) {
-//            logger.error("Фильма с id = " + filmId + " нет");
-//            throw new NotFoundException("Фильма с id = " + filmId + " нет");
-//        }
-//        filmStorage.addLike(filmId, userId);
-//    }
+    public void addLike(Long filmId, Long userId) {
+        Optional<User> user = userStorage.getUserById(userId);
+        if (user.isEmpty()) {
+            logger.warn("Пользователь с id = " + userId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
+        }
+        Optional<Film> film = filmStorage.getFilmById(filmId);
+        if (film.isEmpty()) {
+            logger.warn("Фильм с id = " + filmId + " не найден");
+            throw new NotFoundException("Фильм с id = " + filmId + " не найден");
+        }
+        filmStorage.addLike(filmId, userId);
+    }
 //
-//    public void deleteLike(Long filmId, Long userId) {
-//        if (!userStorage.getUsers().containsKey(userId)) {
-//            logger.error("пользователя с id = " + userId + " нет");
-//            throw new NotFoundException("пользователя с id = " + userId + " нет");
-//        }
-//        if (!filmStorage.getFilms().containsKey(filmId)) {
-//            logger.error("Фильма с id = " + filmId + " нет");
-//            throw new NotFoundException("Фильма с id = " + filmId + " нет");
-//        }
-//        filmStorage.deleteLike(filmId, userId);
-//    }
+    public void deleteLike(Long filmId, Long userId) {
+        Optional<User> user = userStorage.getUserById(userId);
+        if (user.isEmpty()) {
+            logger.warn("Пользователь с id = " + userId + " не найден");
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
+        }
+        Optional<Film> film = filmStorage.getFilmById(filmId);
+        if (film.isEmpty()) {
+            logger.warn("Фильм с id = " + filmId + " не найден");
+            throw new NotFoundException("Фильм с id = " + filmId + " не найден");
+        }
+        filmStorage.deleteLike(filmId, userId);
+    }
 //
-//    public Collection<Film> findMostPopular(Integer size, Integer from, String sort) {
-//        return filmStorage.getFilms().values().stream().sorted((p0, p1) -> {
-//            int comp = p0.getLikesCount().compareTo(p1.getLikesCount()); //прямой порядок сортировки
-//            if (sort.equals("desc")) {
-//                comp = -1 * comp; //обратный порядок сортировки
-//            }
-//            return comp;
-//        }).skip(from).limit(size).collect(Collectors.toList());
-//    }
+    public Collection<Film> findMostPopular(Integer size, Integer from, String sort) {
+        return filmStorage.getFilms().stream().sorted((p0, p1) -> {
+            int comp = filmStorage.getLikesCount(p0).compareTo(filmStorage.getLikesCount(p1)); //прямой порядок сортировки
+            if (sort.equals("desc")) {
+                comp = -1 * comp; //обратный порядок сортировки
+            }
+            return comp;
+        }).skip(from).limit(size).collect(Collectors.toList());
+    }
 }

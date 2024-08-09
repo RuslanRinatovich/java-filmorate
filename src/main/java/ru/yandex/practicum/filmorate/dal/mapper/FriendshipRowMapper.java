@@ -15,7 +15,9 @@ import java.time.ZoneId;
 public class FriendshipRowMapper implements RowMapper<Friendship> {
 
     public Friendship mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-        Friendship friendship = new Friendship(resultSet.getLong("user_id"), resultSet.getLong("friend_id"));
+        Friendship friendship = new Friendship();
+        friendship.setUserId(resultSet.getLong("user_id"));
+        friendship.setFriendId(resultSet.getLong("friend_id"));
         friendship.setStatus(resultSet.getBoolean("status"));
         return friendship;
     }

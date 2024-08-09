@@ -20,6 +20,7 @@ public class FilmDbStorage {
     private final FilmRepository filmRepository;
     private final GenreRepository genreRepository;
     private final MPARepository mpaRepository;
+    private final FilmLikeRepository filmLikeRepository;
     public List<Film> getFilms() {
         return filmRepository.findAll();
     }
@@ -53,5 +54,24 @@ public class FilmDbStorage {
 
     public Optional<MPA> getMPAById(long mpaId) {
         return mpaRepository.findById(mpaId);
+    }
+
+    public List<MPA> getMPAs() {
+        return mpaRepository.findAll();
+    }
+    public Integer getLikesCount(Film film)
+    {
+        return filmRepository.getLikesCount(film);
+    };
+
+    public void addLike(Long filmId, Long userId)
+    {
+
+        filmLikeRepository.add(filmId, userId);
+    }
+
+    public void deleteLike(Long filmId, Long userId)
+    {
+        filmLikeRepository.delete(filmId, userId);
     }
 }

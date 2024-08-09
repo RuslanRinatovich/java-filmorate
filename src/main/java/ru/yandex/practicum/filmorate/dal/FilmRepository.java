@@ -16,9 +16,10 @@ public class FilmRepository extends BaseRepository<Film> {
 
     private static final String FIND_ALL_QUERY = "SELECT * FROM FILM ";
     private static final String FIND_BY_GENRE = "SELECT * FROM FILM WHERE GENRE_ID = ?";
+    private static final String GET_LIKES_COUNT = "SELECT COUNT(*) FROM FILM_LIKE WHERE FILM_ID = ?";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM FILM WHERE ID = ?";
     private static final String INSERT_QUERY = "INSERT INTO FILM(RATE, NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_QUERY = "UPDATE FILM SET RATING_ID = ?, NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ? WHERE ID = ?";
+    private static final String UPDATE_QUERY = "UPDATE FILM SET RATE = ?, NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ? WHERE ID = ?";
     private static final String DELETE_BY_ID_QUERY = "DELETE FROM FILM WHERE ID = ?";
 
     public FilmRepository(JdbcTemplate jdbc, RowMapper<Film> mapper) {
@@ -32,6 +33,10 @@ public class FilmRepository extends BaseRepository<Film> {
 
     public Optional<Film> findByGenre(Long genreId) {
         return findOne(FIND_BY_GENRE, genreId);
+    }
+
+    public Integer getLikesCount(Film film) {
+        return jdbc.queryForObject(GET_LIKES_COUNT,  Integer.class, film.getId());
     }
 
     public Optional<Film> findById(long filmId) {
@@ -53,7 +58,6 @@ public class FilmRepository extends BaseRepository<Film> {
                 film.getDuration(),
                 film.getMpa().getId()
         );
-
         film.setId(id);
         return film;
     }
@@ -66,6 +70,7 @@ public class FilmRepository extends BaseRepository<Film> {
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
+                film.getMpa().getId(),
                 film.getId()
         );
         return film;

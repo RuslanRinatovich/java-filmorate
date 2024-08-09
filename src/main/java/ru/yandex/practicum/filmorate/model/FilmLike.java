@@ -4,15 +4,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
-@Builder
 @Data
 public class FilmLike {
-    @NonNull
     private Long filmId;
-    @NonNull
     private Long userId;
-    private LocalDate createDate;
+    private Instant createDate;
 
 }

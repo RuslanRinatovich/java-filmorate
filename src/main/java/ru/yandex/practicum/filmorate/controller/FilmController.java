@@ -56,31 +56,31 @@ public class FilmController {
         filmService.deleteFilm(filmId);
     }
 
-//    // добавить лайк
-//    @PutMapping("/{id}/like/{userId}")
-//    public void addLike(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
-//        // добавьте необходимые проверки
-//        if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
-//        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
-//        filmService.addLike(filmId, userId);
-//    }
+    // добавить лайк
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
+        // добавьте необходимые проверки
+        if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
+        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
+        filmService.addLike(filmId, userId);
+    }
 //
 //    // удалить лайк
-//    @DeleteMapping("/{id}/like/{userId}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void deleteLike(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
-//        // добавьте необходимые проверки
-//        if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
-//        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
-//        filmService.deleteLike(filmId, userId);
-//    }
-//
-//    @GetMapping("/popular")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Collection<Film> getMostPopularFilms(@RequestParam(name = "count", defaultValue = "10", required = false) Integer count) {
-//        String sort = "desc"; //asc
-//        return filmService.findMostPopular(count, 0, sort);
-//    }
+    @DeleteMapping("/{id}/like/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteLike(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
+        // добавьте необходимые проверки
+        if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
+        if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
+        filmService.deleteLike(filmId, userId);
+    }
+
+    @GetMapping("/popular")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<Film> getMostPopularFilms(@RequestParam(name = "count", defaultValue = "10", required = false) Integer count) {
+        String sort = "desc"; //asc
+        return filmService.findMostPopular(count, 0, sort);
+    }
 
 
 }
