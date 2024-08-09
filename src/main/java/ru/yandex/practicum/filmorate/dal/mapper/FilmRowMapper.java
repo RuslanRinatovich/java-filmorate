@@ -41,6 +41,7 @@ public class FilmRowMapper implements RowMapper<Film> {
         film.setMpaId(resultSet.getLong("MPA_ID"));
         Optional<MPA> mpa = mpaRepository.findById(resultSet.getInt("MPA_ID"));
         mpa.ifPresent(film::setMpa);
+        film.setGenres(genreRepository.findGenresOfFilm(film.getId()));
         return film;
     }
 

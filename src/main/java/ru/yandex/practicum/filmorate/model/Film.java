@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import java.util.Set;
 
 
 @Data
@@ -23,5 +23,4 @@ public class Film {
     private Long mpaId;
     private MPA mpa;
     private List<Genre> genres;
-
 }
