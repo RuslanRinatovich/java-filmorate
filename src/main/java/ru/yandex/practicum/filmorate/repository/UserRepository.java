@@ -42,7 +42,7 @@ public class UserRepository extends BaseRepository<User> {
         return delete(DELETE_BY_ID_QUERY, userId);
     }
 
-    @SneakyThrows
+
     public User add(User user) {
         long id = insert(
                 INSERT_QUERY,
@@ -56,7 +56,7 @@ public class UserRepository extends BaseRepository<User> {
         return user;
     }
 
-    @SneakyThrows
+
     public User update(User user) {
         update(
                 UPDATE_QUERY,

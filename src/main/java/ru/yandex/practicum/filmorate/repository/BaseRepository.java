@@ -5,7 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
+import ru.yandex.practicum.filmorate.exception.RepositoryDbException;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -37,7 +37,7 @@ public abstract class BaseRepository<T> {
         return rowsDeleted > 0;
     }
 
-    protected Integer insert(String query, Object... params) throws InternalServerErrorException {
+    protected Integer insert(String query, Object... params) throws RepositoryDbException {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(connection -> {
             PreparedStatement ps = connection
@@ -52,11 +52,11 @@ public abstract class BaseRepository<T> {
         if (id != null) {
             return id;
         } else {
-            throw new InternalServerErrorException("Не удалось сохранить данные");
+            throw new RepositoryDbException("Не удалось сохранить данные");
         }
     }
 
-    protected Map<String, Object> insertWithPrimaryKey(String query, Object... params) throws InternalServerErrorException {
+    protected Map<String, Object> insertWithPrimaryKey(String query, Object... params) throws RepositoryDbException {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(connection -> {
             PreparedStatement ps = connection
@@ -71,14 +71,14 @@ public abstract class BaseRepository<T> {
         if (id != null) {
             return id;
         } else {
-            throw new InternalServerErrorException("Не удалось сохранить данные");
+            throw new RepositoryDbException("Не удалось сохранить данные");
         }
     }
 
-    protected void update(String query, Object... params) throws InternalServerErrorException {
+    protected void update(String query, Object... params) throws RepositoryDbException {
         int rowsUpdated = jdbc.update(query, params);
         if (rowsUpdated == 0) {
-            throw new InternalServerErrorException("Не удалось обновить данные");
+            throw new RepositoryDbException("Не удалось обновить данные");
         }
     }
 }

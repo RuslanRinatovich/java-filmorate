@@ -18,7 +18,7 @@ public class FilmLikeRepository extends BaseRepository<FilmLike> {
         super(jdbc, mapper, FilmLike.class);
     }
 
-    @SneakyThrows
+
     public void add(Long filmId, Long userId) {
         insertWithPrimaryKey(
                 INSERT_QUERY,

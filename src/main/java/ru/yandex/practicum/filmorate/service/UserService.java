@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.UserDto;
-import ru.yandex.practicum.filmorate.exception.InternalServerErrorException;
+import ru.yandex.practicum.filmorate.exception.RepositoryDbException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
@@ -68,8 +68,8 @@ public class UserService {
             if (currentUser.isPresent()) {
                 logger.error("Этот имейл уже используется");
                 try {
-                    throw new InternalServerErrorException("Этот имейл уже используется");
-                } catch (InternalServerErrorException e) {
+                    throw new RepositoryDbException("Этот имейл уже используется");
+                } catch (RepositoryDbException e) {
                     throw new RuntimeException(e);
                 }
             }

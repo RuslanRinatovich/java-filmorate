@@ -43,7 +43,7 @@ public class FilmRepository extends BaseRepository<Film> {
         return delete(DELETE_BY_ID_QUERY, filmId);
     }
 
-    @SneakyThrows
+
     public Film add(Film film) {
 
         long id = insert(
@@ -71,7 +71,7 @@ public class FilmRepository extends BaseRepository<Film> {
         return film;
     }
 
-    @SneakyThrows
+
     public Film update(Film film) {
         update(
                 UPDATE_QUERY,

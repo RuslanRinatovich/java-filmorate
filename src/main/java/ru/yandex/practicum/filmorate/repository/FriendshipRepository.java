@@ -23,7 +23,7 @@ public class FriendshipRepository extends BaseRepository<Friendship> {
         super(jdbc, mapper, Friendship.class);
     }
 
-    @SneakyThrows
+
     public Friendship addFriend(Friendship friendship) {
 
         insertWithPrimaryKey(
