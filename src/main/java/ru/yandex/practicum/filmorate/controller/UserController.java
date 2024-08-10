@@ -18,7 +18,7 @@ import java.util.Collection;
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    @Autowired
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -34,7 +34,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDto getUser(@PathVariable(name = "id", required = false) final Long userId) {
+    public UserDto getUser(@PathVariable(name = "id") final Long userId) {
         if (userId == null) throw new IncorrectParameterException("Id должен быть указан");
         return userService.getUser(userId);
     }
@@ -57,7 +57,7 @@ public class UserController {
     //
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Boolean deleteUser(@PathVariable(name = "id", required = false) final Long userId) {
+    public Boolean deleteUser(@PathVariable(name = "id") final Long userId) {
         if (userId == null) throw new IncorrectParameterException("Id должен быть указан");
         return userService.deleteUser(userId);
     }
@@ -66,7 +66,7 @@ public class UserController {
     //    //добавление в друзья
     @PutMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
-    public void addFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
+    public void addFriend(@PathVariable(name = "id") final Long userId, @PathVariable(name = "friendId") final Long friendId) {
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
         userService.addFriend(userId, friendId);
@@ -76,7 +76,7 @@ public class UserController {
 //    // удаление друзей
     @DeleteMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteFriend(@PathVariable(name = "id", required = false) final Long userId, @PathVariable(name = "friendId", required = false) final Long friendId) {
+    public void deleteFriend(@PathVariable(name = "id") final Long userId, @PathVariable(name = "friendId") final Long friendId) {
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         if (friendId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
         userService.deleteFriend(userId, friendId);
@@ -86,7 +86,7 @@ public class UserController {
 //    //  возвращаем список пользователей, являющихся его друзьями
     @GetMapping("/{id}/friends")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<User> like(@PathVariable(name = "id", required = false) final Long userId) {
+    public Collection<User> like(@PathVariable(name = "id") final Long userId) {
         // добавьте необходимые проверки
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         return userService.getFriends(userId);
@@ -96,8 +96,8 @@ public class UserController {
 //    // возвращаем список пользователей, являющихся его друзьями.
     @GetMapping("/{id}/friends/common/{otherId}")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<User> getCommonFriends(@PathVariable(name = "id", required = false) final Long userId,
-                                             @PathVariable(name = "otherId", required = false) final Long otherUserId) {
+    public Collection<User> getCommonFriends(@PathVariable(name = "id") final Long userId,
+                                             @PathVariable(name = "otherId") final Long otherUserId) {
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
         if (otherUserId == null) throw new IncorrectParameterException("Необходимо установить параметр friendId");
         return userService.getCommonFriends(userId, otherUserId);

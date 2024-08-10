@@ -29,7 +29,7 @@ public class MPAController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public MPA getMPA(@PathVariable(name = "id", required = false) final Long mpaId) {
+    public MPA getMPA(@PathVariable(name = "id") final Long mpaId) {
         if (mpaId == null) throw new IncorrectParameterException("Id должен быть указан");
         return mpaService.getMPA(mpaId);
     }

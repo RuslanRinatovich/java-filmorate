@@ -29,7 +29,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Film getFilm(@PathVariable(name = "id", required = false) final Long filmId) {
+    public Film getFilm(@PathVariable(name = "id") final Long filmId) {
         if (filmId == null) throw new IncorrectParameterException("Id должен быть указан");
         return filmService.getFilm(filmId);
     }
@@ -49,14 +49,14 @@ public class FilmController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteFilm(@PathVariable(name = "id", required = false) final Long filmId) {
+    public void deleteFilm(@PathVariable(name = "id") final Long filmId) {
         if (filmId == null) throw new IncorrectParameterException("Id должен быть указан");
         filmService.deleteFilm(filmId);
     }
 
     // добавить лайк
     @PutMapping("/{id}/like/{userId}")
-    public void addLike(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
+    public void addLike(@PathVariable(name = "id") final Long filmId, @PathVariable(required = false) final Long userId) {
         // добавьте необходимые проверки
         if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");
@@ -67,7 +67,7 @@ public class FilmController {
 //    // удалить лайк
     @DeleteMapping("/{id}/like/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteLike(@PathVariable(name = "id", required = false) final Long filmId, @PathVariable(required = false) final Long userId) {
+    public void deleteLike(@PathVariable(name = "id") final Long filmId, @PathVariable final Long userId) {
         // добавьте необходимые проверки
         if (filmId == null) throw new IncorrectParameterException("Необходимо установить параметр filmId");
         if (userId == null) throw new IncorrectParameterException("Необходимо установить параметр userId");

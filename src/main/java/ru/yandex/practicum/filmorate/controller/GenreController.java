@@ -28,7 +28,7 @@ public class GenreController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Genre getGenre(@PathVariable(name = "id", required = false) final Long genreId) {
+    public Genre getGenre(@PathVariable(name = "id") final Long genreId) {
         if (genreId == null) throw new IncorrectParameterException("Id должен быть указан");
         return genreService.getGenre(genreId);
     }
