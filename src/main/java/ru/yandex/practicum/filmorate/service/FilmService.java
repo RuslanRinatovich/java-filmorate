@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
@@ -30,19 +31,8 @@ public class FilmService {
     private final FilmDbStorage filmStorage;
 
     //метод для проверки фильма
-    void validateFilmsData(Film film) {
-        if (film.getName() == null || film.getName().isBlank()) {
-            logger.error("название не может быть пустым");
-            throw new ValidationException("название не может быть пустым");
-        }
-        if (film.getDescription() != null && film.getDescription().length() > 200) {
-            logger.error("максимальная длина описания — 200 символов");
-            throw new ValidationException("максимальная длина описания — 200 символов");
-        }
-        if (film.getDuration() <= 0) {
-            logger.error("продолжительность фильма должна быть положительным числом");
-            throw new ValidationException("продолжительность фильма должна быть положительным числом");
-        }
+    void validateFilmsData(FilmDto film) {
+
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, Calendar.DECEMBER, 28))) {
             logger.error("дата релиза — не раньше 28 декабря 1895 года");
             throw new ValidationException("дата релиза — не раньше 28 декабря 1895 года");
@@ -75,20 +65,20 @@ public class FilmService {
     }
 
     // добавить фильм
-    public Film addFilm(Film film) {
+    public FilmDto addFilm(FilmDto film) {
         validateFilmsData(film);
-        return filmStorage.add(film);
+        return FilmMapper.mapToFilmDto(filmStorage.add(FilmMapper.mapToFilm(film)));
     }
 
     // обновить фильм
-    public Film updateFilm(Film newFilm) {
+    public FilmDto updateFilm(FilmDto newFilm) {
         Optional<Film> oldFilm = filmStorage.getFilmById(newFilm.getId());
         if (oldFilm.isEmpty()) {
             logger.warn("Фильм с id = " + newFilm.getId() + " не найден");
             throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");
         }
         validateFilmsData(newFilm);
-        return filmStorage.update(newFilm);
+        return FilmMapper.mapToFilmDto(filmStorage.update(FilmMapper.mapToFilm(newFilm)));
     }
 
     // удалить фильм
@@ -101,13 +91,13 @@ public class FilmService {
         return filmStorage.delete(filmId);
     }
 
-    public Film getFilm(Long filmId) {
+    public FilmDto getFilm(Long filmId) {
         Optional<Film> film = filmStorage.getFilmById(filmId);
         if (film.isEmpty()) {
             logger.warn("Фильм с id = " + filmId + " не найден");
             throw new NotFoundException("Фильм с id = " + filmId + " не найден");
         }
-        return film.get();
+        return FilmMapper.mapToFilmDto(film.get());
     }
 
     //

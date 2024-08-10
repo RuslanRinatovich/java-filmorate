@@ -11,7 +11,7 @@ public class ErrorHandler {
     // 500
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleInternalServerError(final Throwable e) {
+    public ErrorResponse handleRepositoryDbException(final RepositoryDbException e) {
         return new ErrorResponse(
                 "Возникло исключение",
                 e.getMessage()

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -29,20 +30,20 @@ public class FilmController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Film getFilm(@PathVariable(name = "id") final Long filmId) {
+    public FilmDto getFilm(@PathVariable(name = "id") final Long filmId) {
         if (filmId == null) throw new IncorrectParameterException("Id должен быть указан");
         return filmService.getFilm(filmId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public Film createFilm(@RequestBody Film film) {
+    public FilmDto createFilm(@Valid  @RequestBody FilmDto film) {
         return filmService.addFilm(film);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public Film updateFilm(@RequestBody Film newFilm) {
+    public FilmDto updateFilm(@Valid @RequestBody FilmDto newFilm) {
         if (newFilm.getId() == null) throw new IncorrectParameterException("Id должен быть указан");
         return filmService.updateFilm(newFilm);
     }
