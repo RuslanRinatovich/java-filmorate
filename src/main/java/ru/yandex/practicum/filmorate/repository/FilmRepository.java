@@ -1,12 +1,12 @@
 package ru.yandex.practicum.filmorate.repository;
 
-import lombok.SneakyThrows;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +43,15 @@ public class FilmRepository extends BaseRepository<Film> {
         return delete(DELETE_BY_ID_QUERY, filmId);
     }
 
+    public void batchGenres(List<Genre> genres, Long filmId) {
+        jdbc.batchUpdate(INSERT_FILM_GENRE,
+                genres,
+                100,
+                (PreparedStatement ps, Genre genre) -> {
+                    ps.setLong(1, filmId);
+                    ps.setLong(2, genre.getId());
+                });
+    }
 
     public Film add(Film film) {
 
@@ -56,17 +65,10 @@ public class FilmRepository extends BaseRepository<Film> {
                 film.getMpa().getId()
         );
         film.setId(id);
-
         if (film.getGenres() != null) {
             List<Genre> result = film.getGenres().stream()
                     .distinct().toList();
-            for (Genre g : result) {
-                insertWithPrimaryKey(
-                        INSERT_FILM_GENRE,
-                        film.getId(),
-                        g.getId()
-                );
-            }
+            batchGenres(result, film.getId());
         }
         return film;
     }
@@ -84,20 +86,11 @@ public class FilmRepository extends BaseRepository<Film> {
                 film.getId()
         );
         deleteFilmGenres(film.getId());
-
         if (film.getGenres() != null) {
             List<Genre> result = film.getGenres().stream()
                     .distinct().toList();
-            for (Genre g : result) {
-                insertWithPrimaryKey(
-                        INSERT_FILM_GENRE,
-                        film.getId(),
-                        g.getId()
-                );
-            }
+            batchGenres(result, film.getId());
         }
-
-
         return film;
     }
 

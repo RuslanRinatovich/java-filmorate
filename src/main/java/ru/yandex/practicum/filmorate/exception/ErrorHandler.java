@@ -26,6 +26,7 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
+
     // 400
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
