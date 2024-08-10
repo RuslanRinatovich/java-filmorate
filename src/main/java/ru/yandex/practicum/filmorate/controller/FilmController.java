@@ -77,7 +77,7 @@ public class FilmController {
 
     @GetMapping("/popular")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Film> getMostPopularFilms(@RequestParam(name = "count", defaultValue = "10", required = false) Integer count) {
+    public Collection<FilmDto> getMostPopularFilms(@RequestParam(name = "count", defaultValue = "10", required = false) Integer count) {
         String sort = "desc"; //asc
         return filmService.findMostPopular(count, 0, sort);
     }

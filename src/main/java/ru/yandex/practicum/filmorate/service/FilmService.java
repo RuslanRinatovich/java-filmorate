@@ -129,13 +129,13 @@ public class FilmService {
     }
 
     //
-    public Collection<Film> findMostPopular(Integer size, Integer from, String sort) {
+    public Collection<FilmDto> findMostPopular(Integer size, Integer from, String sort) {
         return filmStorage.getFilms().stream().sorted((p0, p1) -> {
             int comp = filmStorage.getLikesCount(p0).compareTo(filmStorage.getLikesCount(p1)); //прямой порядок сортировки
             if (sort.equals("desc")) {
                 comp = -1 * comp; //обратный порядок сортировки
             }
             return comp;
-        }).skip(from).limit(size).collect(Collectors.toList());
+        }).skip(from).limit(size).map(FilmMapper::mapToFilmDto).collect(Collectors.toList());
     }
 }
