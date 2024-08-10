@@ -13,9 +13,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(of = {"email"})
 public class User {
     private Long id;
-    @NonNull
     private String email;
-    @NonNull
     private String login;
     private String name;
     private LocalDate birthday;

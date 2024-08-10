@@ -15,7 +15,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,28 +27,12 @@ public class UserService {
     private final FilmDbStorage filmStorage;
 
 
-    void validateUsersData(User user) {
+    void validateUsersData(UserDto user) {
 
         Optional<User> currentUser = userStorage.getUserByEmail(user.getEmail());
         if (currentUser.isPresent()) {
             logger.error("Этот имейл уже используется");
             throw new ValidationException("Этот имейл уже используется");
-        }
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            logger.error("электронная почта не может быть пустой");
-            throw new ValidationException("электронная почта не может быть пустой");
-        }
-        if (!user.getEmail().contains("@")) {
-            logger.error("электронная почта не корректна");
-            throw new ValidationException("электронная почта не корректна");
-        }
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            logger.error("логин не может быть пустым и содержать пробелы");
-            throw new ValidationException("логин не может быть пустым и содержать пробелы");
-        }
-        if (user.getBirthday().isAfter(LocalDateTime.now().toLocalDate())) {
-            logger.error("дата рождения не может быть в будущем");
-            throw new ValidationException("дата рождения не может быть в будущем");
         }
     }
 
@@ -67,14 +50,14 @@ public class UserService {
         return UserMapper.mapToUserDto(user.get());
     }
 
-    public UserDto addUser(User user) {
+    public UserDto addUser(UserDto user) {
         validateUsersData(user);
-        return UserMapper.mapToUserDto(userStorage.add(user));
+        return UserMapper.mapToUserDto(userStorage.add(UserMapper.mapToUser(user)));
     }
 
     //
     // обновить пользователя
-    public User updateUser(User newUser) {
+    public UserDto updateUser(UserDto newUser) {
         Optional<User> oldUser = userStorage.getUserById(newUser.getId());
         if (oldUser.isEmpty()) {
             logger.warn("Пользователь с id = " + newUser.getId() + " не найден");
@@ -93,7 +76,7 @@ public class UserService {
 
         }
 
-        return userStorage.update(newUser);
+        return UserMapper.mapToUserDto(userStorage.update(UserMapper.mapToUser(newUser)));
     }
 
 

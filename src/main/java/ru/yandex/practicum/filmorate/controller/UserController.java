@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +43,14 @@ public class UserController {
     //    // добавить пользователя
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public UserDto createUser(@RequestBody User user) {
+    public UserDto createUser(@Valid @RequestBody UserDto user) {
         return userService.addUser(user);
     }
 
     // обновить пользователя
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public User updateUser(@RequestBody User newUser) {
+    public UserDto updateUser(@Valid @RequestBody UserDto newUser) {
         if (newUser.getId() == null) throw new IncorrectParameterException("Id должен быть указан");
         return userService.updateUser(newUser);
     }

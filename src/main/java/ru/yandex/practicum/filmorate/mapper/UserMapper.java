@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.mapper;
 import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.time.Instant;
+
 public final class UserMapper {
 
     public static UserDto mapToUserDto(User user) {
@@ -14,5 +16,15 @@ public final class UserMapper {
         dto.setBirthday(user.getBirthday());
         return dto;
     }
+    public static User mapToUser(UserDto userDto) {
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setLogin(userDto.getLogin());
+        user.setId(userDto.getId());
+        user.setName(userDto.getName());
+        user.setBirthday(userDto.getBirthday());
+        return user;
+    }
+
 
 }
