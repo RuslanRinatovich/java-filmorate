@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.dal;
+package ru.yandex.practicum.filmorate.repository;
 
 import lombok.SneakyThrows;
 import org.springframework.jdbc.core.JdbcTemplate;
